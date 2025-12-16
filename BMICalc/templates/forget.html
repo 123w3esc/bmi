@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Forgot Password - BMI Calculator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+      margin: 0;
+      padding: 0;
+      color: #2c3e50;
+    }
+    .container {
+      max-width: 400px;
+      margin: 80px auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    input[type="email"] {
+      width: 95%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .button-wrapper {
+      text-align: center;
+      margin-top: 10px;
+    }
+    button {
+      width: 85%;
+      padding: 12px;
+      background-color: #0077b6;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005f8e;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Forgot Password</h2>
+
+    {% if messages %}
+      <ul style="color: red;">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <form method="POST">
+      {% csrf_token %}
+      <label for="email">Email</label>
+      <input type="email" name="email" id="email" required />
+      <div class="button-wrapper">
+        <button type="submit">Send OTP</button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

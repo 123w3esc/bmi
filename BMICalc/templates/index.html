@@ -1,0 +1,258 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BMI Calculator & Health Instruction System</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* ✅ Navigation Bar */
+    nav {
+      background: linear-gradient(90deg, #003366, #005f8e);
+      color: #fff;
+      padding: 15px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    nav h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      color: #2ecc71;
+    }
+
+    /* ✅ Hero Section */
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 20px;
+      background: linear-gradient(135deg, #003366, #2ecc71);
+      color: #fff;
+    }
+
+    .hero-text {
+      flex: 1;
+      min-width: 300px;
+      text-align: left;
+      padding: 20px;
+    }
+
+    .hero-text h2 {
+      font-size: 2.8rem;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    .hero-text p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+      max-width: 500px;
+    }
+
+    .cta-button {
+      text-decoration: none;
+      background: #2ecc71;
+      color: #fff;
+      padding: 14px 32px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .cta-button:hover {
+      background: #27ae60;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    }
+
+    .hero-image {
+      flex: 1;
+      min-width: 300px;
+      text-align: center;
+    }
+
+    .hero-image img {
+      max-width: 100%;
+      height: auto;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* ✅ Features Section */
+    section {
+      padding: 60px 20px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    h3.section-title {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 40px;
+      color: #003366;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+
+    .feature-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .feature-box:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
+
+    .feature-box h4 {
+      color: #2ecc71;
+      margin-bottom: 15px;
+      font-size: 1.3rem;
+    }
+
+    .feature-box p {
+      color: #555;
+      font-size: 0.95rem;
+    }
+
+    /* ✅ Quote Section */
+    .quote-section {
+      background: linear-gradient(to right, #2ecc71, #003366);
+      color: white;
+      text-align: center;
+      padding: 100px 20px;
+    }
+
+    .quote-section h2 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+
+    /* ✅ Footer */
+    footer {
+      text-align: center;
+      padding: 25px;
+      font-size: 0.9rem;
+      color: #777;
+      background: #f0f0f0;
+      border-top: 1px solid #ddd;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        text-align: center;
+      }
+      .hero-text {
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ✅ Navigation -->
+  <nav>
+    <h1>BMI System</h1>
+    <ul>
+      <li><a href="{% url 'about' %}">About</a></li>
+      <li><a href="{% url 'login' %}">Login</a></li>
+      <li><a href="{% url 'register' %}">Register</a></li>
+    </ul>
+  </nav>
+
+  <!-- ✅ Hero -->
+  <header>
+    <div class="hero-text">
+      <h2>BMI Calculator & Health Instruction System</h2>
+      <p>Your journey to better health starts here. Calculate your BMI, track progress, and get personalized tips.</p>
+      <a href="{% url 'register' %}" class="cta-button">Get Started</a>
+    </div>
+    <div class="hero-image">
+      <img src="{% static 'images/hero-illustration.png' %}" alt="Health Illustration">
+    </div>
+  </header>
+
+  <!-- ✅ Features -->
+  <section>
+    <h3 class="section-title">What You Can Do</h3>
+    <div class="features">
+      <div class="feature-box">
+        <h4>⚖️ Calculate Your BMI</h4>
+        <p>Get instant feedback on your body mass index and understand your health category.</p>
+      </div>
+      <div class="feature-box">
+        <h4>📊 Track Progress</h4>
+        <p>Monitor your health journey with personalized insights and visual charts.</p>
+      </div>
+      <div class="feature-box">
+        <h4>💡 Get Health Tips</h4>
+        <p>Receive curated advice based on your BMI and goals to stay motivated.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ✅ Quote -->
+  <section class="quote-section">
+    <h2>“Strong habits build a strong body.”</h2>
+  </section>
+
+  <!-- ✅ Footer -->
+  <footer>
+    &copy; 2025 BMI Calculator & Health Instruction System. All rights reserved.
+  </footer>
+
+</body>
+</html>

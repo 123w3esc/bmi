@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About Us - BMI Calculator</title>
+  <style>
+    /* -------------------------------
+       GLOBAL STYLES AND BACKGROUND
+    -------------------------------- */
+    body {
+      font-family: 'Segoe UI', sans-serif; /* Clean, modern font */
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%); /* Soft gradient background */
+      color: #2c3e50; /* Dark slate text for readability */
+    }
+
+    .container {
+      max-width: 1100px; /* Limits content width for better readability */
+      margin: 0 auto; /* Centers the container horizontally */
+      padding: 40px 20px; /* Adds space around content */
+    }
+
+    /* -------------------------------
+       HEADER SECTION
+    -------------------------------- */
+    .header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .header h1 {
+      font-size: 3em; /* Large title */
+      color: #1a1a1a;
+      margin-bottom: 10px;
+    }
+
+    .header h2 {
+      font-size: 1.4em;
+      color: #555;
+      font-weight: 400;
+    }
+
+    /* -------------------------------
+       CONTENT SECTIONS (Overview, Tech Stack, Team)
+    -------------------------------- */
+    .section {
+      background-color: #ffffff; /* White card background */
+      padding: 30px;
+      border-radius: 10px; /* Rounded corners */
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05); /* Soft shadow for elevation */
+      margin-bottom: 30px;
+    }
+
+    .section h3 {
+      margin-top: 0;
+      color: #1a1a1a;
+    }
+
+    .tech-stack ul {
+      padding-left: 20px; /* Indents list items */
+    }
+
+    /* -------------------------------
+       TEAM SECTION GRID LAYOUT
+    -------------------------------- */
+    .team-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); /* Responsive columns */
+      gap: 20px; /* Space between cards */
+    }
+
+    /* -------------------------------
+       TEAM PROFILE CARD STYLING
+    -------------------------------- */
+    .profile {
+      display: flex;
+      align-items: center;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      text-decoration: none; /* Removes underline from link */
+      color: inherit; /* Inherits text color */
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
+      border-left: 5px solid #0077b6; /* Blue accent border */
+    }
+
+    .profile:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* Stronger shadow on hover */
+      transform: translateY(-3px); /* Slight lift effect */
+    }
+
+    /* -------------------------------
+       AVATAR IMAGE AND INITIALS
+    -------------------------------- */
+    .avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%; /* Circular shape */
+      background-color: #dfe6e9; /* Light gray fallback */
+      overflow: hidden;
+      margin-right: 20px;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Ensures image fills circle */
+    }
+
+    .initials {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 20px;
+      font-weight: bold;
+      color: #636e72;
+    }
+
+    /* -------------------------------
+       PROFILE TEXT METADATA
+    -------------------------------- */
+    .meta .name {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .meta .role {
+      font-size: 14px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- ===============================
+         HEADER SECTION
+    ================================== -->
+    <div class="header">
+      <h1>About Us</h1>
+      <h2>BMI Calculator and Health Instruction System</h2>
+    </div>
+
+    <!-- ===============================
+         PROJECT OVERVIEW SECTION
+    ================================== -->
+    <div class="section">
+      <h3>Overview</h3>
+      <p>This is a 3rd year minor project developed by B.Tech AIML students. Our system provides accurate BMI calculations and personalized health instructions based on user inputs.</p>
+    </div>
+
+    <!-- ===============================
+         TECHNOLOGY STACK SECTION
+    ================================== -->
+    <div class="section tech-stack">
+      <h3>Technology Stack</h3>
+      <ul>
+        <li>Frontend: HTML, CSS, JavaScript</li>
+        <li>Backend: Django</li>
+        <li>Database: SQL</li>
+      </ul>
+    </div>
+
+    <!-- ===============================
+         TEAM MEMBERS SECTION
+    ================================== -->
+    <div class="section">
+      <h3>Our Team</h3>
+      <div class="team-section">
+        <!-- Prem Raghuvanshi -->
+        <a href="https://www.linkedin.com/in/premraghuvanshi" target="_blank" rel="noopener noreferrer" class="profile">
+          <div class="avatar">
+            <img src="/static/images/prem.jpg" alt="Prem Raghuvanshi" onerror="this.style.display='none'">
+            <span class="initials">PR</span>
+          </div>
+          <div class="meta">
+            <div class="name">Prem Raghuvanshi</div>
+            <div class="role">Enrollment: 0403AL231054 — B.Tech AIML, 3rd Year</div>
+          </div>
+        </a>
+
+        <!-- Vedansh Joshi -->
+        <a href="https://www.linkedin.com/in/vedanshjoshi" target="_blank" rel="noopener noreferrer" class="profile">
+          <div class="avatar">
+            <img src="/static/images/vedansh.jpg" alt="Vedansh Joshi" onerror="this.style.display='none'">
+            <span class="initials">VJ</span>
+          </div>
+          <div class="meta">
+            <div class="name">Vedansh Joshi</div>
+            <div class="role">Enrollment: 0403AL231072 — B.Tech AIML, 3rd Year</div>
+          </div>
+        </a>
+
+        <!-- Yash Gujarathi -->
+        <a href="https://www.linkedin.com/in/yashgujarathi" target="_blank" rel="noopener noreferrer" class="profile">
+          <div class="avatar">
+            <img src="/static/images/yash_g.jpg" alt="Yash Gujarathi" onerror="this.style.display='none'">
+            <span class="initials">YG</span>
+          </div>
+          <div class="meta">
+            <div class="name">Yash Gujarathi</div>
+            <div class="role">Enrollment: 0403AL231075 — B.Tech AIML, 3rd Year</div>
+          </div>
+        </a>
+
+        <!-- Yash Pathak -->
+        <a href="https://www.linkedin.com/in/yashpathak" target="_blank" rel="noopener noreferrer" class="profile">
+          <div class="avatar">
+            <img src="/static/images/yash_p.jpg" alt="Yash Pathak" onerror="this.style.display='none'">
+            <span class="initials">YP</span>
+          </div>
+          <div class="meta">
+            <div class="name">Yash Pathak</div>
+            <div class="role">Enrollment: 0403AL231076 — B.Tech AIML, 3rd Year</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

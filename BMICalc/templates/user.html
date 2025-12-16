@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Welcome - BMI Calculator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+      margin: 0;
+      padding: 0;
+      color: #2c3e50;
+    }
+    .container {
+      max-width: 600px;
+      margin: 100px auto;
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 18px;
+      margin-bottom: 30px;
+    }
+    a.button {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: #0077b6;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+    a.button:hover {
+      background-color: #005f8e;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome, {{ request.session.user_name }}!</h1>
+    <p>You have successfully logged in to the BMI Calculator.</p>
+    <a href="{% url 'logout' %}" class="button">Logout</a>
+  </div>
+</body>
+</html>

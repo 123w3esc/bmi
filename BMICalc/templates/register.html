@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register - BMI Calculator</title>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+      margin: 0;
+      padding: 0;
+      color: #2c3e50;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 400px;
+      background-color: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #0077b6;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 18px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #0077b6;
+      outline: none;
+    }
+
+    .button-wrapper {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #0077b6;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #005f8e;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    .login-link a {
+      color: #0077b6;
+      text-decoration: none;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        margin: 20px;
+        padding: 20px;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Create Account</h2>
+
+    <form method="POST">
+      {% csrf_token %}
+
+      <label for="username">Username</label>
+      <input type="text" name="username" id="username" required />
+
+      <label for="email">Email</label>
+      <input type="email" name="email" id="email" required />
+
+      <label for="password">Password</label>
+      <input type="password" name="password" id="password" required />
+
+      <div class="button-wrapper">
+        <button type="submit">Register</button>
+      </div>
+    </form>
+
+    <div class="login-link">
+      <a href="{% url 'login' %}">Already have an account? Login</a>
+    </div>
+  </div>
+</body>
+</html>

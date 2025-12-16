@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- ===============================
+       META AND PAGE SETTINGS
+  ================================== -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Change Password - BMI Calculator</title>
+
+  <!-- ===============================
+       CSS STYLING
+  ================================== -->
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+      margin: 0;
+      padding: 0;
+      color: #2c3e50;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 80px auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    input[type="password"] {
+      width: 95%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .button-wrapper {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    button {
+      width: 85%;
+      padding: 12px;
+      background-color: #0077b6;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #005f8e;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    .login-link a {
+      color: #0077b6;
+      text-decoration: none;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+
+  <!-- ===============================
+       JAVASCRIPT VALIDATION
+  ================================== -->
+  <script>
+    function validateChangeForm() {
+      const newPass = document.getElementById("new_password").value.trim();
+      const confirmPass = document.getElementById("confirm_password").value.trim();
+
+      if (!newPass || !confirmPass) {
+        alert("Please fill in both password fields.");
+        return false;
+      }
+
+      if (newPass.length < 8) {
+        alert("Password must be at least 8 characters long.");
+        return false;
+      }
+
+      if (!/[a-zA-Z]/.test(newPass)) {
+        alert("Password must contain at least one letter.");
+        return false;
+      }
+
+      if (newPass !== confirmPass) {
+        alert("Passwords do not match.");
+        return false;
+      }
+
+      return true;
+    }
+  </script>
+</head>
+<body>
+  <!-- ===============================
+       CHANGE PASSWORD FORM CONTAINER
+  ================================== -->
+  <div class="container">
+    <h2>Change Password</h2>
+
+    <!-- ===============================
+         PASSWORD CHANGE FORM
+    ================================== -->
+    <form method="POST" onsubmit="return validateChangeForm();">
+      {% csrf_token %}
+
+      <!-- New password input -->
+      <label for="new_password">New Password</label>
+      <input type="password" name="new_password" id="new_password" />
+
+      <!-- Confirm password input -->
+      <label for="confirm_password">Re-enter Password</label>
+      <input type="password" name="confirm_password" id="confirm_password" />
+
+      <!-- Submit button -->
+      <div class="button-wrapper">
+        <button type="submit">Change Password</button>
+      </div>
+    </form>
+
+    <!-- ===============================
+         LOGIN LINK
+    ================================== -->
+    <div class="login-link">
+      <a href="{% url 'login' %}">Back to Login</a>
+    </div>
+  </div>
+</body>
+</html>
