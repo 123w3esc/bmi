@@ -2,7 +2,8 @@ from django.contrib.auth.hashers import check_password, make_password
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail
 from django.contrib import messages
-from .models import User
+from datetime import datetime
+from .models import User, BMIRecord
 import random
 
 def index(request):
@@ -175,3 +176,63 @@ def user_home(request):
 def logout(request):
     request.session.flush()
     return redirect('login')
+
+
+
+
+def calculate_bmi(request):
+    if request.method == 'POST':
+        try:
+            height = float(request.POST.get('height'))
+            weight = float(request.POST.get('weight'))
+
+            # Validation
+            if height < 55 or height > 272:
+                messages.error(request, "Please enter valid height (55–272 cm).")
+                return redirect('calculate_bmi')
+            if weight < 25 or weight > 150:
+                messages.error(request, "Please enter valid weight (25–150 kg).")
+                return redirect('calculate_bmi')
+
+            bmi = round(weight / ((height / 100) ** 2), 2)
+
+            if bmi < 18.5:
+                status = "Underweight"
+            elif 18.5 <= bmi < 24.9:
+                status = "Normal"
+            elif 25 <= bmi < 29.9:
+                status = "Overweight"
+            else:
+                status = "Obese"
+
+            # ✅ Save to database
+            if 'user_id' in request.session:
+                user = User.objects.get(id=request.session['user_id'])
+                BMIRecord.objects.create(
+                    user=user,
+                    height=height,
+                    weight=weight,
+                    bmi=bmi,
+                    status=status
+                )
+
+            return render(request, 'calculate_bmi.html', {
+                'bmi': bmi,
+                'status': status,
+                'height': height,
+                'weight': weight
+            })
+        except ValueError:
+            messages.error(request, "Invalid input. Please enter numbers only.")
+            return redirect('calculate_bmi')
+
+    return render(request, 'calculate_bmi.html')
+
+def track_progress(request):
+    if 'user_id' not in request.session:
+        messages.error(request, "Please log in first.")
+        return redirect('login')
+
+    user = User.objects.get(id=request.session['user_id'])
+    records = user.bmi_records.order_by('created_at')  # oldest first
+    return render(request, 'track_progress.html', {'records': records})

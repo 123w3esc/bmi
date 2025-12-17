@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path
-from core import views
+from BMICalc.core import views
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -17,6 +17,9 @@ urlpatterns = [
     path('forgetPass', views.forget, name='forgetPass'),
     path('user', views.user_home, name='user'),
     path('logout', views.logout, name='logout'),
+    path('calculate_bmi/', views.calculate_bmi, name='calculate_bmi'),
+    path('track_progress/', views.track_progress, name='track_progress'),
+
 ]
 
 # ✅ Serve static files during development

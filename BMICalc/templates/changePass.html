@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Change Password - BMI Calculator</title>
-  <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+  {% include "fevicon.html" %}
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -126,23 +126,37 @@
       // Clear previous messages
       if (messagesDiv) messagesDiv.innerHTML = "";
 
+      // Empty check
       if (!newPass || !confirmPass) {
-        if (messagesDiv) messagesDiv.innerHTML = "Please fill in both password fields.";
+        messagesDiv.innerHTML = "Please fill in both password fields.";
         return false;
       }
-      if (newPass.length < 8) {
-        if (messagesDiv) messagesDiv.innerHTML = "Password must be at least 8 characters long.";
+
+      // ✅ Length check (at least 6 characters)
+      if (newPass.length < 6) {
+        messagesDiv.innerHTML = "Password must be at least 6 characters long.";
         return false;
       }
+
+      // ✅ Must contain at least one letter
       if (!/[a-zA-Z]/.test(newPass)) {
-        if (messagesDiv) messagesDiv.innerHTML = "Password must contain at least one letter.";
+        messagesDiv.innerHTML = "Password must contain at least one letter.";
         return false;
       }
+
+      // ✅ Must contain at least one number
+      if (!/[0-9]/.test(newPass)) {
+        messagesDiv.innerHTML = "Password must contain at least one number.";
+        return false;
+      }
+
+      // ✅ Confirm password match
       if (newPass !== confirmPass) {
-        if (messagesDiv) messagesDiv.innerHTML = "Passwords do not match.";
+        messagesDiv.innerHTML = "Passwords do not match.";
         return false;
       }
-      return true;
+
+      return true; // All checks passed
     }
   </script>
 </head>

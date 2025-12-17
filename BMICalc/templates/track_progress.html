@@ -1,0 +1,156 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Track Progress - BMI Calculator</title>
+  {% include "fevicon.html" %}
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #003366, #2ecc71);
+      min-height: 100vh;
+      margin: 0;
+      color: #333;
+    }
+    nav {
+      background: linear-gradient(90deg, #003366, #005f8e);
+      padding: 15px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    nav h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #fff;
+      margin: 0;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      margin: 0;
+      padding: 0;
+    }
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    nav ul li a:hover { color: #2ecc71; }
+
+    .container {
+      max-width: 900px;
+      margin: 60px auto;
+      background: #fff;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    h2 { color: #003366; margin-bottom: 20px; text-align: center; }
+    canvas {
+      max-width: 100%;
+      margin-bottom: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table, th, td { border: 1px solid #ccc; }
+    th, td { padding: 12px; text-align: center; }
+    th { background: #003366; color: #fff; }
+    tr:nth-child(even) { background: #f9f9f9; }
+  </style>
+</head>
+<body>
+
+  <!-- ✅ Navigation -->
+  <nav>
+    <h1>BMI System</h1>
+    <ul>
+      <li><a href="{% url 'calculate_bmi' %}">Calculate BMI</a></li>
+      <li><a href="{% url 'track_progress' %}">Track Progress</a></li>
+      <li><a href="{% url 'logout' %}">Logout</a></li>
+    </ul>
+  </nav>
+
+  <!-- ✅ Progress Section -->
+  <div class="container">
+    <h2>Your Progress</h2>
+
+    <!-- ✅ Graph -->
+    <canvas id="bmiChart"></canvas>
+
+    <!-- ✅ Progress Table -->
+    <table>
+      <tr>
+        <th>Date</th>
+        <th>Height (cm)</th>
+        <th>Weight (kg)</th>
+        <th>BMI</th>
+        <th>Status</th>
+      </tr>
+      {% for record in records reversed %}   <!-- newest first in table -->
+      <tr>
+        <td>{{ record.created_at|date:"Y-m-d H:i" }}</td>
+        <td>{{ record.height }}</td>
+        <td>{{ record.weight }}</td>
+        <td>{{ record.bmi }}</td>
+        <td>{{ record.status }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5">No records found.</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <!-- ✅ Chart.js Script -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const ctx = document.getElementById('bmiChart').getContext('2d');
+    const bmiChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        // oldest → newest so latest is on the right
+        labels: [{% for record in records %}'{{ record.created_at|date:"Y-m-d" }}',{% endfor %}],
+        datasets: [{
+          data: [{% for record in records %}{{ record.bmi }},{% endfor %}],
+          borderColor: '#003366',
+          backgroundColor: 'rgba(46, 204, 113, 0.2)',
+          fill: true,
+          tension: 0.3,
+          pointBackgroundColor: '#2ecc71'
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          title: {
+            display: true,
+            text: 'BMI Progress Over Time',
+            font: { size: 18 }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: false,
+            title: { display: true, text: 'BMI Score' }
+          },
+          x: {
+            title: { display: true, text: 'Date' }
+          }
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>

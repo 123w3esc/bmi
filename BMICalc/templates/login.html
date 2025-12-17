@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login - BMI Calculator</title>
-  <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+  {% include "fevicon.html" %}
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -165,8 +165,8 @@
   <nav>
     <h1>BMI System</h1>
     <ul>
+      <li><a href="{% url 'index' %}">Home</a></li>
       <li><a href="{% url 'about' %}">About</a></li>
-      <li><a href="{% url 'login' %}">Login</a></li>
       <li><a href="{% url 'register' %}">Register</a></li>
     </ul>
   </nav>

@@ -1,52 +1,104 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Welcome - BMI Calculator</title>
+  <title>User Dashboard - BMI Calculator</title>
+  {% include "fevicon.html" %}
+
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
-      margin: 0;
-      padding: 0;
-      color: #2c3e50;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #003366, #2ecc71);
+      min-height: 100vh;
+      color: #333;
     }
+
+    /* ✅ Navigation Bar */
+    nav {
+  background: linear-gradient(90deg, #003366, #005f8e);
+  color: #fff; /* ✅ ensures default text inside nav is white */
+  padding: 15px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+nav h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff; /* ✅ explicitly white */
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #fff; /* ✅ links are white */
+  font-weight: 500;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+  color: #2ecc71; /* ✅ hover effect (green accent) */
+}
+
+    /* ✅ Container */
     .container {
-      max-width: 600px;
-      margin: 100px auto;
-      background-color: #fff;
+      max-width: 700px;
+      margin: 60px auto;
+      background: #fff;
       padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
       text-align: center;
+      animation: fadeIn 1s ease-in-out;
     }
-    h1 {
-      margin-bottom: 10px;
+
+    h2 {
+      margin-bottom: 15px;
+      color: #003366;
+      font-size: 2rem;
+      font-weight: 700;
     }
+
     p {
-      font-size: 18px;
+      font-size: 1.1rem;
       margin-bottom: 30px;
+      color: #555;
     }
-    a.button {
-      display: inline-block;
-      padding: 12px 24px;
-      background-color: #0077b6;
-      color: white;
-      text-decoration: none;
-      border-radius: 6px;
-      font-weight: bold;
-    }
-    a.button:hover {
-      background-color: #005f8e;
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
+
+  <!-- ✅ Navigation -->
+  <nav>
+    <h1>BMI System</h1>
+    <ul>
+      <li><a href="{% url 'calculate_bmi' %}">Calculate BMI</a></li>
+      <li><a href="{% url 'track_progress' %}">Track Progress</a></li>
+      <li><a href="{% url 'logout' %}">Logout</a></li>
+    </ul>
+  </nav>
+
+  <!-- ✅ User Dashboard -->
   <div class="container">
-    <h1>Welcome, {{ request.session.user_name }}!</h1>
-    <p>You have successfully logged in to the BMI Calculator.</p>
-    <a href="{% url 'logout' %}" class="button">Logout</a>
+    <h2>Welcome, {{ request.session.user_name }}!</h2>
+    <p>You are logged in to your BMI Calculator dashboard. Use the navigation above to calculate your BMI or track your progress.</p>
   </div>
+
 </body>
 </html>

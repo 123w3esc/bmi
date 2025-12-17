@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>About Us - BMI Calculator</title>
-  <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+  {% include "fevicon.html" %}
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -120,7 +120,7 @@
   <nav>
     <h1>BMI System</h1>
     <ul>
-      <li><a href="{% url 'about' %}">About</a></li>
+      <li><a href="{% url 'index' %}">Home</a></li>
       <li><a href="{% url 'login' %}">Login</a></li>
       <li><a href="{% url 'register' %}">Register</a></li>
     </ul>
@@ -153,7 +153,7 @@
     <div class="content-box">
       <h3>Our Team</h3>
       <div class="team-section">
-        <a href="https://www.linkedin.com/in/premraghuvanshi" target="_blank" class="profile">
+        <a href="https://www.linkedin.com/in/prem-raghuvanshi-b6b51030b/" target="_blank" class="profile">
           <div class="avatar">
             <img src="{% static 'images/prem.jpg' %}" alt="Prem Raghuvanshi" onerror="this.style.display='none'">
             <span class="initials">PR</span>
@@ -164,7 +164,7 @@
           </div>
         </a>
 
-        <a href="https://www.linkedin.com/in/vedanshjoshi" target="_blank" class="profile">
+        <a href="https://www.linkedin.com/in/vedansh-joshi-22951230b/" target="_blank" class="profile">
           <div class="avatar">
             <img src="{% static 'images/vedansh.jpg' %}" alt="Vedansh Joshi" onerror="this.style.display='none'">
             <span class="initials">VJ</span>
@@ -175,7 +175,7 @@
           </div>
         </a>
 
-        <a href="https://www.linkedin.com/in/yashgujarathi" target="_blank" class="profile">
+        <a href="https://www.linkedin.com/in/yash-gujarathi-288886380/" target="_blank" class="profile">
           <div class="avatar">
             <img src="{% static 'images/yash_g.jpg' %}" alt="Yash Gujarathi" onerror="this.style.display='none'">
             <span class="initials">YG</span>
@@ -186,7 +186,7 @@
           </div>
         </a>
 
-        <a href="https://www.linkedin.com/in/yashpathak" target="_blank" class="profile">
+        <a href="https://www.linkedin.com" target="_blank" class="profile">
           <div class="avatar">
             <img src="{% static 'images/yash_p.jpg' %}" alt="Yash Pathak" onerror="this.style.display='none'">
             <span class="initials">YP</span>

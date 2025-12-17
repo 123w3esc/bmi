@@ -1,5 +1,3 @@
-
-# Create your models here.
 from django.db import models
 
 class User(models.Model):
@@ -12,3 +10,15 @@ class User(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class BMIRecord(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bmi_records")
+    height = models.FloatField()   
+    weight = models.FloatField()   
+    bmi = models.FloatField()
+    status = models.CharField(max_length=20)  
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.name} - BMI: {self.bmi} ({self.status})"
