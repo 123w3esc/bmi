@@ -1,0 +1,366 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Workout Plan - BMI Calculator</title>
+  {% include "fevicon.html" %}
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #003366, #2ecc71);
+      min-height: 100vh;
+      color: #333;
+      margin: 0;
+    }
+
+    /* Navigation */
+    nav {
+  background: linear-gradient(90deg, #003366, #005f8e);
+  color: #fff;
+  padding: 8px 25px;   /* reduced vertical + horizontal padding */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* lighter shadow */
+}
+
+nav h1 {
+  font-size: 1.2rem;   /* smaller title text */
+  font-weight: 600;
+  color: #fff;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 15px;           /* slightly tighter spacing */
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: 500;
+  font-size: 0.95rem;  /* slightly smaller link text */
+  transition: color 0.3s ease;
+}
+nav ul li a:hover { color: #2ecc71; }
+
+    /* Container */
+    .container {
+      max-width: 1100px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #003366;
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    /* Grid and cards */
+    .workout-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr); /* 3 columns per row */
+      gap: 20px;
+    }
+    .exercise-card {
+      background: #f9f9f9;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+      padding: 15px;
+    }
+    .exercise-card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .exercise-card h3 { margin: 10px 0; color: #005f8e; }
+    .exercise-card h3 a { text-decoration: none; color: #005f8e; }
+    .exercise-card h3 a:hover { color: #2ecc71; }
+    .details { font-size: 14px; text-align: left; margin-top: 10px; color: #333; }
+    .details p { margin: 4px 0; }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <h1>BMI System</h1>
+    <ul>
+      <li><a href="{% url 'user' %}">User Home</a></li>
+      <li><a href="{% url 'track_progress' %}">Track Progress</a></li>
+      <li><a href="{% url 'diet_plan' status %}">View Diet</a></li>
+      <li><a href="{% url 'logout' %}">Logout</a></li>
+    </ul>
+  </nav>
+
+  <!-- Workout Plan -->
+  <div class="container">
+    <h2>Workout Plan for {{ status }}</h2>
+
+    <div class="workout-container">
+
+      {% if status == "Underweight" %}
+        <div class="exercise-card">
+          <img src="{% static 'images/pushups.jpg' %}" alt="Push Ups">
+          <h3><a href="https://www.google.com/search?q=Push+Ups" target="_blank">Push Ups</a></h3>
+          <div class="details">
+            <p>Sets: 3</p>
+            <p>Reps: 12–15</p>
+            <p>Rest: 60 sec</p>
+            <p>Target: Chest, Triceps</p>
+          </div>
+        </div>
+        <div class="exercise-card">
+          <img src="{% static 'images/squats.jpg' %}" alt="Bodyweight Squats">
+          <h3><a href="https://www.google.com/search?q=Bodyweight+Squats" target="_blank">Bodyweight Squats</a></h3>
+          <div class="details">
+            <p>Sets: 3</p>
+            <p>Reps: 15–20</p>
+            <p>Rest: 60 sec</p>
+            <p>Target: Quads, Glutes</p>
+          </div>
+        </div>
+        <div class="exercise-card">
+          <img src="{% static 'images/plank.jpg' %}" alt="Plank">
+          <h3><a href="https://www.google.com/search?q=Plank+exercise" target="_blank">Plank</a></h3>
+          <div class="details">
+            <p>Sets: 3</p>
+            <p>Hold: 30–45 sec</p>
+            <p>Rest: 45 sec</p>
+            <p>Target: Core</p>
+          </div>
+        </div>
+        <div class="exercise-card">
+          <img src="{% static 'images/lunges.jpg' %}" alt="Forward Lunges">
+          <h3><a href="https://www.google.com/search?q=Forward+Lunges" target="_blank">Forward Lunges</a></h3>
+          <div class="details">
+            <p>Sets: 3</p>
+            <p>Reps: 12 each leg</p>
+            <p>Rest: 60 sec</p>
+            <p>Target: Quads, Glutes</p>
+          </div>
+        </div>
+        <div class="exercise-card">
+          <img src="{% static 'images/burpees.jpg' %}" alt="Burpees">
+          <h3><a href="https://www.google.com/search?q=Burpees" target="_blank">Burpees</a></h3>
+          <div class="details">
+            <p>Sets: 3</p>
+            <p>Reps: 10–12</p>
+            <p>Rest: 90 sec</p>
+            <p>Target: Full Body, Conditioning</p>
+          </div>
+        </div>
+        <div class="exercise-card">
+          <img src="{% static 'images/crunches.jpg' %}" alt="Crunches">
+          <h3><a href="https://www.google.com/search?q=Crunches" target="_blank">Crunches</a></h3>
+          <div class="details">
+            <p>Sets: 3</p>
+            <p>Reps: 15–20</p>
+            <p>Rest: 60 sec</p>
+            <p>Target: Abs</p>
+          </div>
+        </div>
+
+      {% elif status == "Normal" %}
+        <div class="exercise-card">
+          <img src="{% static 'images/diamond_pushups.jpg' %}" alt="Diamond Push Ups">
+          <h3><a href="https://www.google.com/search?q=Diamond+Push+Ups" target="_blank">Diamond Push Ups</a></h3>
+          <div class="details">
+            <p>Sets: 4</p>
+            <p>Reps: 10–12</p>
+            <p>Rest: 60–90 sec</p>
+            <p>Target: Chest, Triceps</p>
+          </div>
+        </div>
+        <div class="exercise-card">
+          <img src="{% static 'images/jumping_jacks.jpg' %}" alt="Jumping Jacks">
+          <h3><a href="https://www.google.com/search?q=Jumping+Jacks" target="_blank">Jumping Jacks</a></h3>
+          <div class="details">
+            <p>Sets: 4</p>
+            <p>Reps: 40–60</p>
+            <p>Rest: 45–60 sec</p>
+            <p>Target: Full Body, Cardio</p>
+          </div>
+        </div>
+        <div class="exercise-card">
+          <img src="{% static 'images/mountain_climbers.jpg' %}" alt="Mountain Climbers">
+          <h3><a href="https://www.google.com/search?q=Mountain+Climbers" target="_blank">Mountain Climbers</a></h3>
+          <div class="details">
+            <p>Sets: 3</p>
+            <p>Reps: 40–60</p>
+            <p>Rest: 45–60 sec</p>
+            <p>Target: Core, Cardio</p>
+          </div>
+        </div>
+        <div class="exercise-card">
+          <img src="{% static 'images/split_squat.jpg' %}" alt="Split Squats">
+          <h3><a href="https://www.google.com/search?q=Split+Squats" target="_blank">Split Squats</a></h3>
+          <div class="details">
+            <p>Sets: 3</p>
+            <p>Reps: 12–15 each leg</p>
+            <p>Rest: 60–90 sec</p>
+            <p>Target: Legs, Glutes, Stability</p>
+          </div>
+        </div>
+        <div class="exercise-card">
+          <img src="{% static 'images/pike_pushups.jpg' %}" alt="Pike Push Ups">
+          <h3><a href="https://www.google.com/search?q=Pike+Push+Ups" target="_blank">Pike Push Ups</a></h3>
+          <div class="details">
+            <p>Sets: 3</p>
+            <p>Reps: 8–10</p>
+            <p>Rest: 60–90 sec</p>
+            <p>Target: Shoulders, Upper Chest</p>
+          </div>
+        </div>
+        <div class="exercise-card">
+          <img src="{% static 'images/bicycle_crunches.jpg' %}" alt="Bicycle Crunches">
+          <h3><a href="https://www.google.com/search?q=Bicycle+Crunches" target="_blank">Bicycle Crunches</a></h3>
+          <div class="details">
+            <p>Sets: 3</p>
+            <p>Reps: 20–30 total</p>
+            <p>Rest: 60 sec</p>
+            <p>Target: Obliques, Abs</p>
+          </div>
+        </div>
+
+      {% elif status == "Overweight" %}
+        <div class="exercise-card">
+          <img src="{% static 'images/march_in_place.jpg' %}" alt="Marching in Place">
+          <h3><a href="https://www.google.com/search?q=Marching+in+Place+exercise" target="_blank">Marching in Place</a></h3>
+          <div class="details">
+            <p>Sets: 3</p>
+            <p>Reps: 60–90 sec (time)</p>
+            <p>Rest: 45–60 sec</p>
+            <p>Target: Cardio, Hips</p>
+          </div>
+        </div>
+        <div class="exercise-card">
+          <img src="{% static 'images/wall_pushup.jpg' %}" alt="Wall Push Ups">
+          <h3><a href="https://www.google.com/search?q=Wall+Push+Ups" target="_blank">Wall Push Ups</a></h3>
+          <div class="details">
+            <p>Sets: 3</p>
+            <p>Reps: 12–15</p>
+            <p>Rest: 60 sec</p>
+            <p>Target: Chest, Triceps (reduced load)</p>
+          </div>
+        </div>
+        <div class="exercise-card">
+          <img src="{% static 'images/half_squats.jpg' %}" alt="Half Squats">
+          <h3><a href="https://www.google.com/search?q=Half+Squats+exercise" target="_blank">Half Squats</a></h3>
+          <div class="details">
+            <p>Sets: 3</p>
+            <p>Reps: 12–15</p>
+            <p>Rest: 60–90 sec</p>
+            <p>Target: Quads, Glutes (low range)</p>
+          </div>
+        </div>
+        <div class="exercise-card">
+          <img src="{% static 'images/standing_knee_raises.jpg' %}" alt="Standing Knee Raises">
+          <h3><a href="https://www.google.com/search?q=Standing+Knee+Raises" target="_blank">Standing Knee Raises</a></h3>
+          <div class="details">
+            <p>Sets: 3</p>
+            <p>Reps: 12–15 each side</p>
+            <p>Rest: 45–60 sec</p>
+            <p>Target: Hip Flexors, Core</p>
+          </div>
+        </div>
+        <div class="exercise-card">
+          <img src="{% static 'images/bird_dog.jpg' %}" alt="Bird Dog">
+          <h3><a href="https://www.google.com/search?q=Bird+Dog+exercise" target="_blank">Bird Dog</a></h3>
+          <div class="details">
+            <p>Sets: 3</p>
+            <p>Reps: 10–12 each side</p>
+            <p>Rest: 60 sec</p>
+            <p>Target: Lower Back, Glutes, Core</p>
+          </div>
+        </div>
+        <div class="exercise-card">
+          <img src="{% static 'images/step_jacks.jpg' %}" alt="Step Jacks">
+          <h3><a href="https://www.google.com/search?q=Step+Jacks+exercise" target="_blank">Step Jacks (Low Impact)</a></h3>
+          <div class="details">
+            <p>Sets: 3</p>
+            <p>Reps: 40–60</p>
+            <p>Rest: 45–60 sec</p>
+            <p>Target: Full Body, Cardio (no jumps)</p>
+          </div>
+        </div>
+
+      {% elif status == "Obese" %}
+        <div class="exercise-card">
+          <img src="{% static 'images/wall_pushup.jpg' %}" alt="Wall Push Ups">
+          <h3><a href="https://www.google.com/search?q=Wall+Push+Ups" target="_blank">Wall Push Ups</a></h3>
+          <div class="details">
+            <p>Sets: 3</p>
+            <p>Reps: 8–12</p>
+            <p>Rest: 60–90 sec</p>
+            <p>Target: Chest, Triceps (supportive)</p>
+          </div>
+        </div>
+        <div class="exercise-card">
+          <img src="{% static 'images/wall_sit.jpg' %}" alt="Wall Sit">
+          <h3><a href="https://www.google.com/search?q=Wall+Sit+exercise" target="_blank">Wall Sit</a></h3>
+          <div class="details">
+            <p>Sets: 3</p>
+            <p>Hold: 20–40 sec</p>
+            <p>Rest: 60–90 sec</p>
+            <p>Target: Quads, Glutes, Endurance</p>
+          </div>
+        </div>
+        <div class="exercise-card">
+          <img src="{% static 'images/seated_leg_raises.jpg' %}" alt="Seated Leg Raises">
+          <h3><a href="https://www.google.com/search?q=Seated+Leg+Raises+exercise" target="_blank">Seated Leg Raises (Floor)</a></h3>
+          <div class="details">
+            <p>Sets: 3</p>
+            <p>Reps: 10–12 each leg</p>
+            <p>Rest: 60 sec</p>
+            <p>Target: Hip Flexors, Core</p>
+          </div>
+        </div>
+        <div class="exercise-card">
+          <img src="{% static 'images/side_leg_raises.jpg' %}" alt="Side Leg Raises">
+          <h3><a href="https://www.google.com/search?q=Side+Leg+Raises+exercise" target="_blank">Side Leg Raises</a></h3>
+          <div class="details">
+            <p>Sets: 3</p>
+            <p>Reps: 10–12 each side</p>
+            <p>Rest: 60 sec</p>
+            <p>Target: Glute Medius, Hips</p>
+          </div>
+        </div>
+        <div class="exercise-card">
+          <img src="{% static 'images/glute_bridge.jpg' %}" alt="Glute Bridge">
+          <h3><a href="https://www.google.com/search?q=Glute+Bridge+exercise" target="_blank">Glute Bridge</a></h3>
+          <div class="details">
+            <p>Sets: 3</p>
+            <p>Reps: 10–15</p>
+            <p>Rest: 60–90 sec</p>
+            <p>Target: Glutes, Hamstrings, Core</p>
+          </div>
+        </div>
+        <div class="exercise-card">
+          <img src="{% static 'images/standing_calf_raises.jpg' %}" alt="Standing Calf Raises">
+          <h3><a href="https://www.google.com/search?q=Standing+Calf+Raises+exercise" target="_blank">Standing Calf Raises</a></h3>
+          <div class="details">
+            <p>Sets: 3</p>
+            <p>Reps: 12–15</p>
+            <p>Rest: 60 sec</p>
+            <p>Target: Calves (Gastrocnemius, Soleus)</p>
+          </div>
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+
+</body>
+</html>

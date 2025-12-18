@@ -1,0 +1,232 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Diet Plan - BMI Calculator</title>
+  {% include "fevicon.html" %}
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #003366, #2ecc71);
+      min-height: 100vh;
+      color: #333;
+      margin: 0;
+    }
+
+    /* Slim nav bar */
+    nav {
+      background: linear-gradient(90deg, #003366, #005f8e);
+      color: #fff;
+      padding: 8px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    nav h1 { font-size: 1.2rem; font-weight: 600; color: #fff; }
+    nav ul { list-style: none; display: flex; gap: 15px; }
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.3s ease;
+    }
+    nav ul li a:hover { color: #2ecc71; }
+
+    .container {
+      max-width: 1100px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #003366;
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    /* 3×2 matrix for 6 items */
+    .diet-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .food-card {
+      background: #f9f9f9;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+      padding: 15px;
+    }
+    .food-card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .food-card h3 { margin: 10px 0; color: #005f8e; }
+    .food-card h3 a { text-decoration: none; color: #005f8e; }
+    .food-card h3 a:hover { color: #2ecc71; }
+    .nutrition { font-size: 14px; text-align: left; margin-top: 10px; color: #333; }
+    .nutrition p { margin: 4px 0; }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <h1>BMI System</h1>
+    <ul>
+      <li><a href="{% url 'user' %}">User Home</a></li>
+      <li><a href="{% url 'track_progress' %}">Track Progress</a></li>
+      <li><a href="{% url 'workout_plan' status %}">View Workout</a></li>
+      <li><a href="{% url 'logout' %}">Logout</a></li>
+    </ul>
+  </nav>
+
+  <!-- Diet Plan -->
+  <div class="container">
+    <h2>Diet Plan for {{ status }}</h2>
+
+    <div class="diet-container">
+      {% if status == "Underweight" %}
+        <div class="food-card">
+          <img src="{% static 'images/oatmeal.jpg' %}" alt="Oatmeal">
+          <h3><a href="https://www.google.com/search?q=Oatmeal+Peanut+Butter" target="_blank">Oatmeal + Peanut Butter</a></h3>
+          <div class="nutrition"><p>Protein: 13 g</p><p>Calories: 311 kcal</p><p>Carbs: 53 g</p><p>Quantity: 1 bowl / 80 g</p></div>
+        </div>
+        <div class="food-card">
+          <img src="{% static 'images/smoothie.jpg' %}" alt="Banana Smoothie">
+          <h3><a href="https://www.google.com/search?q=Banana+Smoothie" target="_blank">Banana Smoothie</a></h3>
+          <div class="nutrition"><p>Protein: 3 g</p><p>Calories: 225 kcal</p><p>Carbs: 58 g</p><p>Quantity: 1 glass / 250 g</p></div>
+        </div>
+        <div class="food-card">
+          <img src="{% static 'images/eggs.jpg' %}" alt="Scrambled Eggs">
+          <h3><a href="https://www.google.com/search?q=Scrambled+Eggs" target="_blank">Scrambled Eggs</a></h3>
+          <div class="nutrition"><p>Protein: 13 g</p><p>Calories: 143 kcal</p><p>Carbs: 1 g</p><p>Quantity: 2 eggs / 100 g</p></div>
+        </div>
+        <div class="food-card">
+          <img src="{% static 'images/chicken_curry.jpg' %}" alt="Chicken Curry + Rice">
+          <h3><a href="https://www.google.com/search?q=Chicken+Curry+Rice" target="_blank">Chicken Curry + Rice</a></h3>
+          <div class="nutrition"><p>Protein: 45 g</p><p>Calories: 550 kcal</p><p>Carbs: 50 g</p><p>Quantity: 1 plate / 250 g</p></div>
+        </div>
+        <div class="food-card">
+          <img src="{% static 'images/nuts.jpg' %}" alt="Mixed Nuts">
+          <h3><a href="https://www.google.com/search?q=Mixed+Nuts" target="_blank">Mixed Nuts</a></h3>
+          <div class="nutrition"><p>Protein: 8 g</p><p>Calories: 243 kcal</p><p>Carbs: 8 g</p><p>Quantity: 1 handful / 40 g</p></div>
+        </div>
+        <div class="food-card">
+          <img src="{% static 'images/milk.jpg' %}" alt="Whole Milk">
+          <h3><a href="https://www.google.com/search?q=Whole+Milk" target="_blank">Whole Milk</a></h3>
+          <div class="nutrition"><p>Protein: 8 g</p><p>Calories: 153 kcal</p><p>Carbs: 12 g</p><p>Quantity: 1 glass / 250 g</p></div>
+        </div>
+
+      {% elif status == "Normal" %}
+        <div class="food-card">
+          <img src="{% static 'images/grilled_fish.jpg' %}" alt="Grilled Fish + Brown Rice">
+          <h3><a href="https://www.google.com/search?q=Grilled+Fish+Brown+Rice" target="_blank">Grilled Fish + Brown Rice</a></h3>
+          <div class="nutrition"><p>Protein: 25 g</p><p>Calories: 420 kcal</p><p>Carbs: 50 g</p><p>Quantity: 1 plate / 200 g</p></div>
+        </div>
+        <div class="food-card">
+          <img src="{% static 'images/fruit_salad.jpg' %}" alt="Fruit Salad">
+          <h3><a href="https://www.google.com/search?q=Fruit+Salad" target="_blank">Fruit Salad</a></h3>
+          <div class="nutrition"><p>Protein: 2 g</p><p>Calories: 180 kcal</p><p>Carbs: 46 g</p><p>Quantity: 1 bowl / 200 g</p></div>
+        </div>
+        <div class="food-card">
+          <img src="{% static 'images/vegetable_stirfry.jpg' %}" alt="Vegetable Stir-fry">
+          <h3><a href="https://www.google.com/search?q=Vegetable+Stir+Fry" target="_blank">Vegetable Stir-fry</a></h3>
+          <div class="nutrition"><p>Protein: 6 g</p><p>Calories: 250 kcal</p><p>Carbs: 30 g</p><p>Quantity: 1 plate / 200 g</p></div>
+        </div>
+        <div class="food-card">
+          <img src="{% static 'images/yogurt.jpg' %}" alt="Greek Yogurt">
+          <h3><a href="https://www.google.com/search?q=Greek+Yogurt" target="_blank">Greek Yogurt</a></h3>
+          <div class="nutrition"><p>Protein: 20 g</p><p>Calories: 118 kcal</p><p>Carbs: 7 g</p><p>Quantity: 1 cup / 200 g</p></div>
+        </div>
+        <div class="food-card">
+          <img src="{% static 'images/chicken_salad.jpg' %}" alt="Chicken Salad">
+          <h3><a href="https://www.google.com/search?q=Chicken+Salad" target="_blank">Chicken Salad</a></h3>
+          <div class="nutrition"><p>Protein: 28 g</p><p>Calories: 300 kcal</p><p>Carbs: 12 g</p><p>Quantity: 1 plate / 200 g</p></div>
+        </div>
+        <div class="food-card">
+          <img src="{% static 'images/soup.jpg' %}" alt="Vegetable Soup">
+          <h3><a href="https://www.google.com/search?q=Vegetable+Soup" target="_blank">Vegetable Soup</a></h3>
+          <div class="nutrition"><p>Protein: 5 g</p><p>Calories: 150 kcal</p><p>Carbs: 20 g</p><p>Quantity: 1 bowl / 200 g</p></div>
+        </div>
+
+      {% elif status == "Overweight" %}
+        <div class="food-card">
+          <img src="{% static 'images/lentil_soup.jpg' %}" alt="Lentil Soup">
+          <h3><a href="https://www.google.com/search?q=Lentil+Soup" target="_blank">Lentil Soup</a></h3>
+          <div class="nutrition"><p>Protein: 14 g</p><p>Calories: 220 kcal</p><p>Carbs: 30 g</p><p>Quantity: 1 bowl / 200 g</p></div>
+        </div>
+        <div class="food-card">
+          <img src="{% static 'images/salad.jpg' %}" alt="Grilled Chicken Salad">
+          <h3><a href="https://www.google.com/search?q=Grilled+Chicken+Salad" target="_blank">Grilled Chicken Salad</a></h3>
+          <div class="nutrition"><p>Protein: 28 g</p><p>Calories: 300 kcal</p><p>Carbs: 12 g</p><p>Quantity: 1 plate / 200 g</p></div>
+        </div>
+        <div class="food-card">
+          <img src="{% static 'images/quinoa.jpg' %}" alt="Quinoa Bowl">
+          <h3><a href="https://www.google.com/search?q=Quinoa+Bowl" target="_blank">Quinoa Bowl</a></h3>
+          <div class="nutrition"><p>Protein: 9 g</p><p>Calories: 280 kcal</p><p>Carbs: 40 g</p><p>Quantity: 1 bowl / 200 g</p></div>
+        </div>
+        <div class="food-card">
+          <img src="{% static 'images/green_smoothie.jpg' %}" alt="Green Smoothie">
+          <h3><a href="https://www.google.com/search?q=Green+Smoothie" target="_blank">Green Smoothie</a></h3>
+          <div class="nutrition"><p>Protein: 5 g</p><p>Calories: 200 kcal</p><p>Carbs: 38 g</p><p>Quantity: 1 glass / 250 g</p></div>
+        </div>
+        <div class="food-card">
+          <img src="{% static 'images/roti.jpg' %}" alt="Whole Wheat Roti + Sabzi">
+          <h3><a href="https://www.google.com/search?q=Whole+Wheat+Roti+Sabzi" target="_blank">Whole Wheat Roti + Sabzi</a></h3>
+          <div class="nutrition"><p>Protein: 12 g</p><p>Calories: 350 kcal</p><p>Carbs: 50 g</p><p>Quantity: 2 roti + sabzi / 200 g</p></div>
+        </div>
+        <div class="food-card">
+          <img src="{% static 'images/beans.jpg' %}" alt="Steamed Beans">
+          <h3><a href="https://www.google.com/search?q=Steamed+Beans" target="_blank">Steamed Beans</a></h3>
+          <div class="nutrition"><p>Protein: 8 g</p><p>Calories: 120 kcal</p><p>Carbs: 14 g</p><p>Quantity: 1 cup / 200 g</p></div>
+        </div>
+
+      {% elif status == "Obese" %}
+        <div class="food-card">
+          <img src="{% static 'images/steamed_veggies.jpg' %}" alt="Steamed Vegetables">
+          <h3><a href="https://www.google.com/search?q=Steamed+Vegetables" target="_blank">Steamed Vegetables</a></h3>
+          <div class="nutrition"><p>Protein: 6 g</p><p>Calories: 150 kcal</p><p>Carbs: 24 g</p><p>Quantity: 1 bowl / 200 g</p></div>
+        </div>
+        <div class="food-card">
+          <img src="{% static 'images/baked_fish.jpg' %}" alt="Baked Fish">
+          <h3><a href="https://www.google.com/search?q=Baked+Fish" target="_blank">Baked Fish</a></h3>
+          <div class="nutrition"><p>Protein: 36 g</p><p>Calories: 300 kcal</p><p>Carbs: 0 g</p><p>Quantity: 1 fillet / 150 g</p></div>
+        </div>
+        <div class="food-card">
+          <img src="{% static 'images/sprouts.jpg' %}" alt="Mixed Sprouts">
+          <h3><a href="https://www.google.com/search?q=Mixed+Sprouts" target="_blank">Mixed Sprouts</a></h3>
+          <div class="nutrition"><p>Protein: 12 g</p><p>Calories: 200 kcal</p><p>Carbs: 36 g</p><p>Quantity: 1 bowl / 200 g</p></div>
+        </div>
+        <div class="food-card">
+          <img src="{% static 'images/soup_clear.jpg' %}" alt="Clear Vegetable Soup">
+          <h3><a href="https://www.google.com/search?q=Clear+Vegetable+Soup" target="_blank">Clear Vegetable Soup</a></h3>
+          <div class="nutrition"><p>Protein: 4 g</p><p>Calories: 120 kcal</p><p>Carbs: 18 g</p><p>Quantity: 1 bowl / 200 g</p></div>
+        </div>
+        <div class="food-card">
+          <img src="{% static 'images/grilled_chicken.jpg' %}" alt="Grilled Chicken Breast">
+          <h3><a href="https://www.google.com/search?q=Grilled+Chicken+Breast" target="_blank">Grilled Chicken Breast</a></h3>
+          <div class="nutrition"><p>Protein: 46 g</p><p>Calories: 285 kcal</p><p>Carbs: 0 g</p><p>Quantity: 1 portion / 150 g</p></div>
+        </div>
+        <div class="food-card">
+          <img src="{% static 'images/quinoa_salad.jpg' %}" alt="Quinoa Vegetable Salad">
+          <h3><a href="https://www.google.com/search?q=Quinoa+Vegetable+Salad" target="_blank">Quinoa Vegetable Salad</a></h3>
+          <div class="nutrition"><p>Protein: 8 g</p><p>Calories: 260 kcal</p><p>Carbs: 40 g</p><p>Quantity: 1 bowl / 200 g</p></div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+</body>
+</html>

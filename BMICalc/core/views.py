@@ -238,3 +238,8 @@ def track_progress(request):
     records = user.bmi_records.order_by('created_at')
     
     return render(request, 'track_progress.html', {'records': records})
+def diet_plan(request, status):
+    return render(request, 'diet.html', {'status': status})
+
+def workout_plan(request, status):
+    return render(request, 'workout.html', {'status': status})

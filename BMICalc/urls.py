@@ -19,6 +19,9 @@ urlpatterns = [
     path('logout', views.logout, name='logout'),
     path('calculate_bmi/', views.calculate_bmi, name='calculate_bmi'),
     path('track_progress/', views.track_progress, name='track_progress'),
+    path('diet/<str:status>/', views.diet_plan, name='diet_plan'),
+    path('workout/<str:status>/', views.workout_plan, name='workout_plan'),
+
 
 ]
 

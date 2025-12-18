@@ -133,8 +133,8 @@
       <h3>Your BMI Score: {{ bmi }}</h3>
       <p>Status: <strong>{{ status }}</strong></p>
       <div class="btn-group">
-        <a href="#" class="btn">View Diet</a>
-        <a href="#" class="btn">View Workout</a>
+        <a href="{% url 'diet_plan' status %}" class="btn">View Diet</a>
+        <a href="{% url 'workout_plan' status %}" class="btn">View Workout</a>
       </div>
     </div>
     {% endif %}
