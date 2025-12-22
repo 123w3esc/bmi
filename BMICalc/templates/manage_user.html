@@ -1,0 +1,181 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Manage Users - Admin Panel</title>
+  {% include "fevicon.html" %}
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #003366, #2ecc71);
+      min-height: 100vh;
+      color: #333;
+    }
+
+    /* ✅ Navigation Bar */
+    nav {
+      background: linear-gradient(90deg, #003366, #005f8e);
+      color: #fff;
+      padding: 15px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    nav h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+      font-size: 1rem;
+      transition: color 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      color: #2ecc71;
+    }
+
+    /* ✅ Wide Container */
+    .container {
+      width: 95%;              /* ✅ make container wide */
+      max-width: 1400px;       /* ✅ allow more space */
+      margin: 40px auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 14px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+      animation: fadeIn 1s ease-in-out;
+    }
+    h2 {
+      margin-bottom: 20px;
+      color: #003366;
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    /* ✅ Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    table th, table td {
+      padding: 10px;
+      text-align: center;
+      font-size: 0.9rem;
+      border: 1px solid #ddd;
+    }
+    table th {
+      background: linear-gradient(90deg, #003366, #005f8e);
+      color: #fff;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    table tr:nth-child(even) td { background: #f9f9f9; }
+
+    /* ✅ Buttons */
+    .btn {
+      padding: 6px 12px;
+      background: linear-gradient(90deg, #003366, #2ecc71);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s ease, opacity 0.3s ease;
+      font-size: 0.85rem;
+      display: inline-block;
+    }
+    .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+
+    
+  </style>
+</head>
+<body>
+
+  <!-- ✅ Navigation -->
+  <nav>
+    <h1>BMI System - Admin</h1>
+    <ul>
+      <li><a href="{% url 'admin_home' %}">Home</a></li>
+      <li><a href="{% url 'manage_users' %}">Manage Users</a></li>
+      <li><a href="{% url 'logout' %}">Logout</a></li>
+    </ul>
+  </nav>
+
+  <!-- ✅ Manage Users Table -->
+  <div class="container">
+    <h2>Manage Users</h2>
+
+    {% if messages %}
+      {% for message in messages %}
+        <p class="{{ message.tags }}">{{ message }}</p>
+      {% endfor %}
+    {% endif %}
+
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Age</th>
+        <th>Gender</th>
+        <th>City</th>
+        <th>Condition</th>
+        <th>Verified</th>
+        <th>Verify</th>
+        <th>Admin</th>
+        <th>Delete</th>
+      </tr>
+      {% for user in users %}
+      <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.age }}</td>
+        <td>{{ user.gender }}</td>
+        <td>{{ user.city }}</td>
+        <td>{{ user.condition|default:"None" }}</td>
+        <td>{{ user.is_verified }}</td>
+        <td>
+          {% if not user.is_verified %}
+            <a href="{% url 'verify_user' user.id %}" class="btn">Verify</a>
+          {% else %}
+            <span style="color:green; font-weight:600;">✔ Verified</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if not user.admin %}
+            <a href="{% url 'make_admin' user.id %}" class="btn">Make Admin</a>
+          {% else %}
+            <span style="color:blue; font-weight:600;">Admin</span>
+          {% endif %}
+        </td>
+        <td>
+          <a href="{% url 'delete_user' user.id %}" class="btn" onclick="return confirm('Delete this user?');">Delete</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+</body>
+</html>

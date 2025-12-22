@@ -1,5 +1,6 @@
 from django.contrib.auth.hashers import check_password, make_password
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
+
 from django.core.mail import send_mail
 from django.contrib import messages
 from .models import User, BMIRecord
@@ -100,7 +101,10 @@ def register(request):
 
 
 # ---------------- LOGIN ----------------
+
+
 def login(request):
+    # Clear any previous session
     request.session.pop('user_name', None)
     request.session.pop('user_id', None)
 
@@ -122,10 +126,16 @@ def login(request):
             messages.error(request, 'Account not verified. Please check your email for OTP.')
             return redirect('login')
 
+        # ✅ Save session
         request.session['user_id'] = user.id
         request.session['user_name'] = user.name
         messages.success(request, f'Welcome back, {user.name}!')
-        return redirect('user')
+
+        # ✅ Redirect based on admin flag
+        if user.admin:   # if admin column is True (1)
+            return redirect('admin_home')   # goes to admin.html
+        else:
+            return redirect('user')    # goes to user.html
 
     return render(request, 'login.html')
 
@@ -350,3 +360,38 @@ def diet_bp(request, status):
 
 def workout_plan(request, status):
     return render(request, 'workout.html', {'status': status})
+
+
+
+def admin_home(request):
+    return render(request, 'admin.html')
+
+
+def manage_users(request):
+    users = User.objects.all()
+    return render(request, 'manage_user.html', {'users': users})
+
+
+def verify_user(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    user.is_verified = True
+    user.save()
+    messages.success(request, f'User {user.name} has been verified.')
+    return redirect('manage_users')
+
+
+def delete_user(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    user.delete()
+    messages.success(request, f'User {user.name} has been deleted.')
+    return redirect('manage_users')
+
+
+
+
+def make_admin(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    user.admin = True
+    user.save()
+    messages.success(request, f'User {user.name} is now an Admin.')
+    return redirect('manage_users')

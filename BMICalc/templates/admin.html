@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard - BMI Calculator</title>
+  {% include "fevicon.html" %}
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #003366, #2ecc71);
+      min-height: 100vh;
+      color: #333;
+    }
+
+    /* ✅ Navigation Bar */
+    nav {
+      background: linear-gradient(90deg, #003366, #005f8e);
+      color: #fff;
+      padding: 15px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    nav h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+      font-size: 1rem;
+      transition: color 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      color: #2ecc71;
+    }
+
+    /* ✅ Container */
+    .container {
+      max-width: 700px;
+      margin: 60px auto;
+      background: #fff;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    h2 {
+      margin-bottom: 15px;
+      color: #003366;
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+      color: #555;
+    }
+
+    
+  </style>
+</head>
+<body>
+
+  <!-- ✅ Navigation -->
+  <nav>
+    <h1>BMI System - Admin</h1>
+    <ul>
+      <li><a href="{% url 'admin_home' %}">Home</a></li>
+      <li><a href="{% url 'manage_users' %}">Manage Users</a></li>
+      <li><a href="{% url 'logout' %}">Logout</a></li>
+    </ul>
+  </nav>
+
+  <!-- ✅ Admin Dashboard -->
+  <div class="container">
+    <h2>Welcome, {{ request.session.user_name }} (Admin)!</h2>
+    <p>You are logged in to the Admin Dashboard. Use the navigation above to manage users or return to the home panel.</p>
+  </div>
+
+</body>
+</html>

@@ -23,6 +23,12 @@ urlpatterns = [
     path('diet_diabetes/<str:status>/', views.diet_diabetes, name='diet_diabetes'),
     path('diet_bp/<str:status>/', views.diet_bp, name='diet_bp'),
     path('workout/<str:status>/', views.workout_plan, name='workout_plan'),
+    path('admin-panel/', views.admin_home, name='admin_home'),
+    path('admin-panel/manage-users/', views.manage_users, name='manage_users'),
+    path('admin-panel/verify/<int:user_id>/', views.verify_user, name='verify_user'),
+    path('admin-panel/delete/<int:user_id>/', views.delete_user, name='delete_user'),
+    path('admin-panel/make-admin/<int:user_id>/', views.make_admin, name='make_admin'),
+
 
 
 ]
