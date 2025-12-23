@@ -147,7 +147,7 @@
       </tr>
       {% for user in users %}
       <tr>
-        <td>{{ user.id }}</td>
+        <td>{{ forloop.counter }}</td>
         <td>{{ user.name }}</td>
         <td>{{ user.email }}</td>
         <td>{{ user.age }}</td>

@@ -52,6 +52,63 @@
       font-size: 2rem;
       font-weight: 700;
     }
+    .schedule-container {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.btn-toggle {
+  padding: 12px 25px;
+  background: linear-gradient(90deg, #003366, #2ecc71);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.3s ease;
+  margin-bottom: 20px;
+}
+.btn-toggle:hover { opacity: 0.9; transform: translateY(-2px); }
+
+.schedule-box {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.6s ease, opacity 0.6s ease;
+  margin: 0 auto;
+  max-width: 600px;
+}
+
+.schedule-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.schedule-box li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  margin: 8px 0;
+  padding: 12px 18px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  /* hover removed */
+}
+
+.schedule-box li .time {
+  font-weight: 600;
+  color: #003366;
+  font-size: 0.95rem;
+}
+
+.schedule-box li .activity {
+  font-size: 0.9rem;
+  color: #2ecc71;
+  font-style: italic;
+}
 
     /* 3×2 matrix for 6 items */
     .diet-container {
@@ -79,6 +136,21 @@
     .nutrition p { margin: 4px 0; }
   </style>
 </head>
+<script>
+function toggleSchedule() {
+  const box = document.getElementById("scheduleBox");
+  const btn = document.querySelector(".btn-toggle");
+  if (box.style.maxHeight && box.style.maxHeight !== "0px") {
+    box.style.maxHeight = "0";
+    box.style.opacity = "0";
+    btn.textContent = "View Schedule";
+  } else {
+    box.style.maxHeight = box.scrollHeight + "px";
+    box.style.opacity = "1";
+    btn.textContent = "Hide Schedule";
+  }
+}
+</script>
 <body>
 
   <!-- Navigation -->
@@ -229,6 +301,49 @@
       <div class="nutrition"><p>Protein: 7 g</p><p>Calories: 190 kcal</p><p>Quantity: 1 bowl / 250 ml</p></div>
     </div>
   {% endif %}
+</div>
+<div class="schedule-container">
+  <!-- Centered Toggle Button -->
+  <button class="btn-toggle" onclick="toggleSchedule()">View Schedule</button>
+
+  <!-- Hidden Schedule Section -->
+  <div id="scheduleBox" class="schedule-box">
+    {% if status == "Underweight" %}
+      <ul>
+        <li><span class="time">7:00 AM</span><span class="activity">Heavy breakfast</span></li>
+        <li><span class="time">10:00 AM</span><span class="activity">Mid‑morning snack</span></li>
+        <li><span class="time">1:00 PM</span><span class="activity">Balanced lunch</span></li>
+        <li><span class="time">4:00 PM</span><span class="activity">Energy snack</span></li>
+        <li><span class="time">7:00 PM</span><span class="activity">Strength workout</span></li>
+        <li><span class="time">8:00 PM</span><span class="activity">Light dinner</span></li>
+        <li><span class="time">10:00 PM</span><span class="activity">Bedtime snack</span></li>
+      </ul>
+    {% elif status == "Normal" %}
+      <ul>
+        <li><span class="time">7:30 AM</span><span class="activity">Moderate breakfast</span></li>
+        <li><span class="time">12:30 PM</span><span class="activity">Balanced lunch</span></li>
+        <li><span class="time">4:00 PM</span><span class="activity">Light snack</span></li>
+        <li><span class="time">6:30 PM</span><span class="activity">Evening workout</span></li>
+        <li><span class="time">8:00 PM</span><span class="activity">Light dinner</span></li>
+      </ul>
+    {% elif status == "Overweight" %}
+      <ul>
+        <li><span class="time">7:30 AM</span><span class="activity">Light breakfast</span></li>
+        <li><span class="time">12:00 PM</span><span class="activity">Controlled lunch</span></li>
+        <li><span class="time">3:30 PM</span><span class="activity">Healthy snack</span></li>
+        <li><span class="time">6:30 PM</span><span class="activity">Cardio workout</span></li>
+        <li><span class="time">8:00 PM</span><span class="activity">Very light dinner</span></li>
+      </ul>
+    {% elif status == "Obese" %}
+      <ul>
+        <li><span class="time">8:00 AM</span><span class="activity">Very light breakfast</span></li>
+        <li><span class="time">1:00 PM</span><span class="activity">Small lunch</span></li>
+        <li><span class="time">5:00 PM</span><span class="activity">Light snack</span></li>
+        <li><span class="time">7:00 PM</span><span class="activity">Gentle workout</span></li>
+        <li><span class="time">8:00 PM</span><span class="activity">Soup‑style dinner</span></li>
+      </ul>
+    {% endif %}
+  </div>
 </div>
   </div>
 
