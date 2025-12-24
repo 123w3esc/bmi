@@ -1,0 +1,331 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BMI Bot - Healthcare Chat</title>
+  {% include "fevicon.html" %}
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #003366, #2ecc71);
+      min-height: 100vh;
+      margin: 0;
+      color: #333;
+    }
+
+    nav {
+      background: linear-gradient(90deg, #003366, #005f8e);
+      padding: 15px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      position: sticky; top: 0; z-index: 1000;
+    }
+    nav h1 { font-size: 1.6rem; font-weight: 700; color: #fff; margin: 0; }
+    nav ul { list-style: none; display: flex; gap: 20px; margin: 0; padding: 0; }
+    nav ul li a { text-decoration: none; color: #fff; font-weight: 500; transition: color 0.3s ease; }
+    nav ul li a:hover { color: #2ecc71; }
+
+    .chat-container {
+      max-width: 850px;
+      margin: 30px auto;
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-box { display: flex; flex-direction: column; gap: 15px; }
+
+    .bot-msg {
+      background: #f0f4f8;
+      padding: 14px 20px;
+      border-radius: 18px 18px 18px 4px;
+      max-width: 80%;
+      color: #003366;
+      font-weight: 500;
+      border: 1px solid #d1d9e0;
+      align-self: flex-start;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .user-msg {
+      background: #2ecc71;
+      padding: 12px 20px;
+      border-radius: 18px 18px 4px 18px;
+      max-width: 75%;
+      align-self: flex-end;
+      color: #fff;
+      font-weight: 600;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .options { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; margin-top: 5px; }
+
+    .btn-option {
+      background: linear-gradient(90deg, #003366, #2ecc71);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    .btn-option:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+    .results-wrapper { display: flex; flex-wrap: wrap; gap: 15px; margin: 10px 0; }
+
+    .specialist-card {
+      background: #fff;
+      border: 1px solid #e0e6ed;
+      border-radius: 16px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 calc(50% - 15px);
+      min-width: 290px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      position: relative;
+    }
+
+    .avatar {
+      width: 55px; height: 55px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #003366, #005f8e);
+      color: #fff; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: 1.2rem;
+    }
+
+    .category-tag {
+      display: inline-block; margin-top: 8px; font-size: 0.75rem;
+      font-weight: 600; color: #003366; background: #f0f4f8;
+      padding: 4px 10px; border-radius: 6px; border-left: 3px solid #003366;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    #specialistLibrary { display: none; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <h1>BMI System</h1>
+    <ul>
+      <li><a href="{% url 'user' %}">User Home</a></li>
+      <li><a href="{% url 'calculate_bmi' %}">Calculate BMI</a></li>
+      <li><a href="{% url 'track_progress' %}">Track Progress</a></li>
+      <li><a href="{% url 'logout' %}">Logout</a></li>
+    </ul>
+  </nav>
+
+  <div class="chat-container">
+    <div class="chat-box" id="chatBox" data-user-city="{{ city|default:'' }}">
+      <div class="bot-msg">Welcome! I'm your health assistant. How can I help you today?</div>
+      <div class="options" id="initialOptions">
+        <button class="btn-option" onclick="selectFlow('diet')">Diet</button>
+        <button class="btn-option" onclick="selectFlow('workout')">Workout</button>
+        <button class="btn-option" onclick="selectFlow('specialist')">Specialist</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="specialistLibrary">
+    {% for s in specialists %}
+      <div class="specialist-card" data-name="{{ s.name }}" data-type="{{ s.specialist_type }}" data-loc="{{ s.location }}" data-spec="{{ s.specialty }}" data-time="{{ s.availability }}">
+        <div class="avatar"></div>
+        <div class="specialist-info">
+          <h3>{{ s.name }}</h3>
+          <p><strong>{{ s.specialty }}</strong></p>
+          <p>City: {{ s.location }}</p>
+          <div class="category-tag">Category: {{ s.specialist_type }}</div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    let selectedWeight = null;
+    const chatBox = document.getElementById('chatBox');
+    const normalize = (str) => String(str || '').trim().toLowerCase();
+
+    function getInitials(name) {
+      if (!name) return "?";
+      let cleanName = name.replace(/^dr\.?\s+/i, "");
+      let parts = cleanName.trim().split(/\s+/);
+      return parts.length === 1 ? parts[0].charAt(0) : parts[0].charAt(0) + parts[parts.length - 1].charAt(0);
+    }
+
+    function appendBotMsg(text) {
+      const msg = document.createElement('div');
+      msg.className = 'bot-msg';
+      msg.innerHTML = text;
+      chatBox.appendChild(msg);
+      msg.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function appendUserMsg(text) {
+      const msg = document.createElement('div');
+      msg.className = 'user-msg';
+      msg.textContent = text;
+      chatBox.appendChild(msg);
+      msg.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function removeElement(id) { const el = document.getElementById(id); if (el) el.remove(); }
+
+    function selectFlow(choice) {
+      removeElement('initialOptions');
+      removeElement('restartOptions');
+      appendUserMsg(choice);
+
+      setTimeout(() => {
+        appendBotMsg(`Please select your weight status for <strong>${choice}</strong>:`);
+        const optDiv = document.createElement('div');
+        optDiv.className = 'options';
+        optDiv.id = 'weightOptions';
+        ['Underweight', 'Normal', 'Overweight', 'Obese'].forEach(status => {
+          const btn = document.createElement('button');
+          btn.className = 'btn-option';
+          btn.textContent = status;
+          btn.onclick = () => {
+            if (choice === 'specialist') handleSpecWeight(status);
+            else if (choice === 'workout') handleWorkout(status);
+            else handleDietWeight(status);
+          };
+          optDiv.appendChild(btn);
+        });
+        chatBox.appendChild(optDiv);
+      }, 400);
+    }
+
+    // WORKOUT FLOW
+    function handleWorkout(status) {
+      removeElement('weightOptions');
+      appendUserMsg(status);
+      appendBotMsg(`Redirecting to your <strong>${status}</strong> workout plan...`);
+      setTimeout(() => {
+        window.location.href = `/workout/${status}/`; 
+      }, 800);
+    }
+
+    // DIET FLOW (With Condition Branching)
+    function handleDietWeight(status) {
+      removeElement('weightOptions');
+      appendUserMsg(status);
+      setTimeout(() => {
+        appendBotMsg(`Do you have any specific health conditions for the <strong>${status}</strong> diet plan?`);
+        const optDiv = document.createElement('div');
+        optDiv.className = 'options';
+        optDiv.id = 'dietCondOptions';
+        
+        const conditions = [
+          { label: 'No', path: 'diet' },
+          { label: 'Diabetes', path: 'diet_diabetes' },
+          { label: 'Blood Pressure', path: 'diet_bp' }
+        ];
+
+        conditions.forEach(cond => {
+          const btn = document.createElement('button');
+          btn.className = 'btn-option';
+          btn.textContent = cond.label;
+          btn.onclick = () => {
+            removeElement('dietCondOptions');
+            appendUserMsg(cond.label);
+            appendBotMsg(`Fetching your <strong>${status}</strong> diet plan...`);
+            setTimeout(() => {
+              window.location.href = `/${cond.path}/${status}/`;
+            }, 800);
+          };
+          optDiv.appendChild(btn);
+        });
+        chatBox.appendChild(optDiv);
+      }, 400);
+    }
+
+    // SPECIALIST FLOW
+    function handleSpecWeight(status) {
+      selectedWeight = status;
+      removeElement('weightOptions');
+      appendUserMsg(status);
+      setTimeout(() => {
+        appendBotMsg("Do you have any conditions for specialist matching?");
+        const optDiv = document.createElement('div');
+        optDiv.className = 'options'; optDiv.id = 'condOptions';
+        ['No', 'Diabetes', 'Blood Pressure'].forEach(cond => {
+          const btn = document.createElement('button');
+          btn.className = 'btn-option'; btn.textContent = cond;
+          btn.onclick = () => renderSpecialists(cond);
+          optDiv.appendChild(btn);
+        });
+        chatBox.appendChild(optDiv);
+      }, 400);
+    }
+
+    function renderSpecialists(condition) {
+      removeElement('condOptions');
+      appendUserMsg(condition);
+      const resultsWrapper = document.createElement('div');
+      resultsWrapper.className = 'results-wrapper';
+      const userCity = normalize(chatBox.dataset.userCity);
+      const weightKey = normalize(selectedWeight);
+      const condKey = normalize(condition);
+
+      const libraryCards = document.querySelectorAll('#specialistLibrary .specialist-card');
+      let found = 0;
+
+      libraryCards.forEach(card => {
+        const cLoc = normalize(card.dataset.loc);
+        const cType = normalize(card.dataset.type);
+        let isMatch = false;
+
+        if (cLoc === userCity) {
+          if (weightKey === 'normal') {
+            if (condKey === 'no') { if (cType === 'general') isMatch = true; }
+            else { if (cType === condKey) isMatch = true; }
+          } else {
+            const isWeightMatch = (cType === weightKey) || (weightKey === 'obese' && cType === 'overweight');
+            if (condKey === 'no') { if (isWeightMatch) isMatch = true; }
+            else { if (cType === condKey || isWeightMatch) isMatch = true; }
+          }
+        }
+
+        if (isMatch) {
+          const clone = card.cloneNode(true);
+          clone.querySelector('.avatar').textContent = getInitials(clone.dataset.name);
+          resultsWrapper.appendChild(clone);
+          found++;
+        }
+      });
+
+      setTimeout(() => {
+        if (found > 0) {
+          appendBotMsg(`Found <strong>${found} specialists</strong> in ${chatBox.dataset.userCity}:`);
+          chatBox.appendChild(resultsWrapper);
+        } else {
+          appendBotMsg("No specialists found for this selection in your city.");
+        }
+        showRestart();
+      }, 600);
+    }
+
+    function showRestart() {
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = `<div class="bot-msg" style="margin-top:20px;">Anything else?</div><div class="options" id="restartOptions">
+          <button class="btn-option" onclick="selectFlow('diet')">Diet</button>
+          <button class="btn-option" onclick="selectFlow('workout')">Workout</button>
+          <button class="btn-option" onclick="selectFlow('specialist')">Specialist</button>
+        </div>`;
+      chatBox.appendChild(wrapper);
+      wrapper.scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>

@@ -85,8 +85,9 @@
   <nav>
     <h1>BMI System</h1>
     <ul>
-      <li><a href="{% url 'calculate_bmi' %}">Calculate BMI</a></li>
+      <li><a href="{% url 'user' %}">User Home</a></li>
       <li><a href="{% url 'track_progress' %}">Track Progress</a></li>
+      <li><a href="{% url 'specialist_bot' %}">Health Assistant</a></li>
       <li><a href="{% url 'logout' %}">Logout</a></li>
     </ul>
   </nav>
@@ -127,9 +128,7 @@
         {% endif %}
         <a href="{% url 'workout_plan' status %}" class="btn">View Workout</a>
       </div>
-      <div style="margin-top:20px; text-align:center;">
-        <button class="btn" type="button">View Nearby Specialists</button>
-      </div>
+      
     </div>
     {% endif %}
   </div>

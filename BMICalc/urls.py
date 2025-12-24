@@ -28,6 +28,8 @@ urlpatterns = [
     path('admin-panel/verify/<int:user_id>/', views.verify_user, name='verify_user'),
     path('admin-panel/delete/<int:user_id>/', views.delete_user, name='delete_user'),
     path('admin-panel/make-admin/<int:user_id>/', views.make_admin, name='make_admin'),
+    path('specialists/', views.specialist_bot, name='specialist_bot'),
+
 
 
 

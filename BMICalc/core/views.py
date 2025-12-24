@@ -1,9 +1,9 @@
 from django.contrib.auth.hashers import check_password, make_password
 from django.shortcuts import render, redirect,get_object_or_404
-
+from django.db.models import Q
 from django.core.mail import send_mail
 from django.contrib import messages
-from .models import User, BMIRecord
+from .models import User, BMIRecord, Specialist
 import random
 # ---------------- HOME  AND ABOUT----------------
 def index(request):
@@ -395,3 +395,44 @@ def make_admin(request, user_id):
     user.save()
     messages.success(request, f'User {user.name} is now an Admin.')
     return redirect('manage_users')
+
+
+
+
+
+
+
+def specialist_bot(request):
+    # Session auth
+    user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('login')
+
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        # Clear bad session and force login
+        request.session.pop('user_id', None)
+        request.session.pop('user_name', None)
+        return redirect('login')
+
+    # Latest BMI record (optional)
+    bmi_record = BMIRecord.objects.filter(user=user).order_by('-created_at').first()
+    bmi_status = (bmi_record.status if bmi_record and getattr(bmi_record, 'status', None) else None)
+
+    # Normalize user fields (avoid None in template/JS)
+    user_city = (user.city or "").strip()
+    user_condition = (user.condition if getattr(user, 'has_condition', False) else None)
+
+   
+    specialists = Specialist.objects.all()
+
+  
+    context = {
+        "specialists": specialists,
+        "bmi_status": bmi_status,   # optional: can be shown in intro
+        "condition": user_condition,
+        "city": user_city,
+    }
+    return render(request, "bot.html", context)
+
