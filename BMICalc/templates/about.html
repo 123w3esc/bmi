@@ -2,207 +2,318 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>About Us - BMI Calculator</title>
-  {% include "fevicon.html" %}
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #f5f7fa;
-      color: #333;
-      line-height: 1.6;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>About Us - BMI System</title>
+    
+    {% include "fevicon.html" %}
 
-    /* ✅ Navigation Bar */
-    nav {
-      background: linear-gradient(90deg, #003366, #005f8e);
-      color: #fff;
-      padding: 15px 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    nav h1 { font-size: 1.6rem; font-weight: 700; }
-    nav ul { list-style: none; display: flex; gap: 20px; }
-    nav ul li a {
-      text-decoration: none; color: #fff; font-weight: 500;
-      transition: color 0.3s ease;
-    }
-    nav ul li a:hover { color: #2ecc71; }
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    /* ✅ Hero Section */
-    header {
-      text-align: center;
-      padding: 80px 20px;
-      background: linear-gradient(135deg, #003366, #2ecc71);
-      color: #fff;
-    }
-    header h2 { font-size: 2.8rem; margin-bottom: 15px; font-weight: 700; }
-    header p { font-size: 1.2rem; max-width: 700px; margin: auto; }
+    <style>
+        /* --- DARK KINETIC THEME VARIABLES --- */
+        :root {
+            --bg-body: #0f172a;      /* Deep Navy/Black */
+            --bg-card: #1e293b;      /* Card Background */
+            --primary-text: #f8fafc; /* White */
+            --secondary-text: #94a3b8; /* Muted Grey */
+            --accent: #3b82f6;       /* Electric Blue */
+            --accent-glow: rgba(59, 130, 246, 0.5);
+            --gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            --glass: rgba(30, 41, 59, 0.7);
+            --border: rgba(255, 255, 255, 0.08);
+        }
 
-    /* ✅ Content Sections */
-    section {
-      padding: 60px 20px;
-      max-width: 1100px;
-      margin: auto;
-    }
-    h3.section-title {
-      text-align: center;
-      font-size: 2rem;
-      margin-bottom: 40px;
-      color: #003366;
-    }
-    .content-box {
-      background: #fff;
-      border-radius: 12px;
-      padding: 30px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-      margin-bottom: 30px;
-    }
-    .content-box h3 { margin-top: 0; color: #2ecc71; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    /* ✅ Team Section */
-    .team-section {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 20px;
-    }
-    .profile {
-      display: flex;
-      align-items: center;
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-      text-decoration: none;
-      color: inherit;
-      transition: box-shadow 0.2s ease, transform 0.2s ease;
-      border-left: 5px solid #2ecc71;
-    }
-    .profile:hover {
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      transform: translateY(-3px);
-    }
-    .avatar {
-      width: 80px; height: 80px;
-      border-radius: 50%;
-      background-color: #dfe6e9;
-      overflow: hidden;
-      margin-right: 20px;
-      flex-shrink: 0;
-      position: relative;
-    }
-    .avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .initials {
-      position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 20px; font-weight: bold; color: #636e72;
-    }
-    .meta .name { font-size: 18px; font-weight: 600; margin-bottom: 5px; }
-    .meta .role { font-size: 14px; color: #555; }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--primary-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
 
-    /* ✅ Footer */
-    footer {
-      text-align: center;
-      padding: 25px;
-      font-size: 0.9rem;
-      color: #777;
-      background: #f0f0f0;
-      border-top: 1px solid #ddd;
-    }
-  </style>
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+
+        /* --- NAVIGATION --- */
+        nav {
+            padding: 20px 5%;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            position: sticky; top: 0; z-index: 1000;
+        }
+        .logo { font-size: 1.5rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+        .logo i { color: var(--accent); margin-right: 8px; }
+        nav ul { display: flex; gap: 30px; }
+        nav ul li a { color: var(--secondary-text); font-weight: 600; }
+        nav ul li a:hover { color: var(--accent); }
+
+        /* --- HERO --- */
+        header {
+            text-align: center;
+            padding: 80px 20px 40px;
+            position: relative;
+        }
+        /* Glowing background orb */
+        header::before {
+            content: ''; position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+            width: 400px; height: 400px; background: var(--accent);
+            filter: blur(150px); opacity: 0.3; z-index: -1;
+        }
+        header h1 {
+            font-size: 3.5rem; font-weight: 800; margin-bottom: 15px;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        header p { color: var(--accent); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+
+        /* --- SECTIONS --- */
+        section { padding: 60px 5%; max-width: 1200px; margin: auto; }
+        
+        .section-title { font-size: 2rem; margin-bottom: 30px; text-align: center; font-weight: 700; }
+        .section-subtitle { text-align: center; color: var(--secondary-text); max-width: 700px; margin: -20px auto 50px; }
+
+        /* --- INFO GRID (Values) --- */
+        .info-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom: 60px;
+        }
+        .info-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            padding: 30px; border-radius: 16px;
+            text-align: center; transition: 0.3s;
+        }
+        .info-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+        .info-card i { font-size: 2rem; color: var(--accent); margin-bottom: 20px; }
+        .info-card h4 { font-size: 1.2rem; margin-bottom: 10px; font-weight: 600; }
+        .info-card p { font-size: 0.9rem; color: var(--secondary-text); }
+
+        /* --- TECH STACK --- */
+        .tech-container {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid var(--border);
+            text-align: center;
+            margin-bottom: 80px;
+        }
+        .tech-chips {
+            display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 20px;
+        }
+        .chip {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .chip:hover {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        /* --- TEAM SECTION --- */
+        .team-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 30px;
+        }
+        .profile-card {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 30px 20px;
+            text-align: center;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .profile-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent);
+        }
+        
+        /* Avatar Styling */
+        .avatar-wrapper {
+            width: 100px; height: 100px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            padding: 3px; /* Border width */
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6); /* Gradient Border */
+            position: relative;
+        }
+        .avatar {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            background-color: #0f172a;
+            border: 3px solid var(--bg-body); /* Inner spacing */
+        }
+        .initials-fallback {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            background: var(--bg-card);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; font-weight: 800; color: var(--secondary-text);
+        }
+
+        .profile-name { font-size: 1.3rem; font-weight: 700; margin-bottom: 5px; color: var(--primary-text); }
+        .profile-role { color: var(--accent); font-size: 0.9rem; font-weight: 600; text-transform: uppercase; margin-bottom: 10px; }
+        .profile-id { font-size: 0.85rem; color: var(--secondary-text); background: rgba(255,255,255,0.05); display: inline-block; padding: 4px 12px; border-radius: 4px; margin-bottom: 20px; font-family: monospace; }
+        
+        .linkedin-btn {
+            display: inline-block;
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--accent);
+            width: 40px; height: 40px;
+            line-height: 40px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            transition: 0.3s;
+        }
+        .linkedin-btn:hover {
+            background: var(--accent); color: white; box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center; padding: 40px 20px;
+            border-top: 1px solid var(--border);
+            color: var(--secondary-text); font-size: 0.9rem;
+            margin-top: 60px;
+        }
+
+        @media(max-width: 768px) {
+            header h1 { font-size: 2.5rem; }
+            nav ul { display: none; }
+        }
+    </style>
 </head>
 <body>
-  <!-- ✅ Navigation -->
-  <nav>
-    <h1>BMI System</h1>
-    <ul>
-      <li><a href="{% url 'index' %}">Home</a></li>
-      <li><a href="{% url 'login' %}">Login</a></li>
-      <li><a href="{% url 'register' %}">Register</a></li>
-    </ul>
-  </nav>
 
-  <!-- ✅ Hero -->
-  <header>
-    <h2>About Us</h2>
-    <p>BMI Calculator & Health Instruction System — developed by B.Tech AIML students.</p>
-  </header>
+    <nav>
+        <div class="logo"><i class="fas fa-heartbeat"></i> BMI System</div>
+        <ul>
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li><a href="{% url 'login' %}">Login</a></li>
+            <li><a href="{% url 'register' %}">Register</a></li>
+        </ul>
+    </nav>
 
-  <!-- ✅ Overview -->
-  <section>
-    <div class="content-box">
-      <h3>Overview</h3>
-      <p>This is a 3rd year minor project developed by B.Tech AIML students. Our system provides accurate BMI calculations and personalized health instructions based on user inputs.</p>
-    </div>
+    <header>
+        <p>B.Tech AIML — Minor Project</p>
+        <h1>Innovating for Health</h1>
+        <div class="section-subtitle">
+            This system bridges the gap between raw data and daily habits. Developed by 3rd Year B.Tech AIML students, our goal is to provide accessible, accurate, and actionable health insights.
+        </div>
+    </header>
 
-    <!-- ✅ Tech Stack -->
-    <div class="content-box">
-      <h3>Technology Stack</h3>
-      <ul>
-        <li>Frontend: HTML, CSS, JavaScript</li>
-        <li>Backend: Django</li>
-        <li>Database: SQL</li>
-      </ul>
-    </div>
+    <section>
+        <div class="info-grid">
+            <div class="info-card">
+                <i class="fas fa-bullseye"></i>
+                <h4>Accuracy</h4>
+                <p>We use standard WHO (World Health Organization) formulas to ensure your BMI data is medically relevant.</p>
+            </div>
+            <div class="info-card">
+                <i class="fas fa-user-shield"></i>
+                <h4>Privacy First</h4>
+                <p>Your health journey is personal. We design our systems with a strict privacy-first architecture.</p>
+            </div>
+            <div class="info-card">
+                <i class="fas fa-brain"></i>
+                <h4>AI Powered</h4>
+                <p>Leveraging concepts from our AIML curriculum to provide smarter health suggestions.</p>
+            </div>
+        </div>
+    </section>
 
-    <!-- ✅ Team -->
-    <div class="content-box">
-      <h3>Our Team</h3>
-      <div class="team-section">
-        <a href="https://www.linkedin.com/in/prem-raghuvanshi-b6b51030b/" target="_blank" class="profile">
-          <div class="avatar">
-            <img src="{% static 'images/prem.jpg' %}" alt="Prem Raghuvanshi" onerror="this.style.display='none'">
-            <span class="initials">PR</span>
-          </div>
-          <div class="meta">
-            <div class="name">Prem Raghuvanshi</div>
-            <div class="role">Enrollment: 0403AL231054 — B.Tech AIML, 3rd Year</div>
-          </div>
-        </a>
+    <section>
+        <div class="tech-container">
+            <h3 class="section-title" style="margin-bottom: 10px;">Technology Stack</h3>
+            <p style="color: var(--secondary-text);">Built with robust and modern technologies</p>
+            <div class="tech-chips">
+                <span class="chip"><i class="fab fa-html5"></i> HTML5</span>
+                <span class="chip"><i class="fab fa-css3-alt"></i> CSS3</span>
+                <span class="chip"><i class="fab fa-js"></i> JavaScript</span>
+                <span class="chip"><i class="fab fa-python"></i> Django</span>
+                <span class="chip"><i class="fas fa-database"></i> SQL Database</span>
+            </div>
+        </div>
+    </section>
 
-        <a href="https://www.linkedin.com/in/vedansh-joshi-22951230b/" target="_blank" class="profile">
-          <div class="avatar">
-            <img src="{% static 'images/vedansh.jpg' %}" alt="Vedansh Joshi" onerror="this.style.display='none'">
-            <span class="initials">VJ</span>
-          </div>
-          <div class="meta">
-            <div class="name">Vedansh Joshi</div>
-            <div class="role">Enrollment: 0403AL231072 — B.Tech AIML, 3rd Year</div>
-          </div>
-        </a>
+    <section>
+        <h3 class="section-title">Meet the Team</h3>
+        <p class="section-subtitle">The minds behind the project. B.Tech AIML, 3rd Year Students.</p>
+        
+        <div class="team-grid">
+            <div class="profile-card">
+                <div class="avatar-wrapper">
+                    <img src="{% static 'images/prem.jpg' %}" alt="Prem" class="avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                    <div class="initials-fallback" style="display:none;">PR</div>
+                </div>
+                <div class="profile-name">Prem Raghuvanshi</div>
+                <div class="profile-role">Developer</div>
+                <div class="profile-id">0403AL231054</div>
+                <div>
+                    <a href="https://www.linkedin.com/in/prem-raghuvanshi-b6b51030b/" target="_blank" class="linkedin-btn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
 
-        <a href="https://www.linkedin.com/in/yash-gujarathi-288886380/" target="_blank" class="profile">
-          <div class="avatar">
-            <img src="{% static 'images/yash_g.jpg' %}" alt="Yash Gujarathi" onerror="this.style.display='none'">
-            <span class="initials">YG</span>
-          </div>
-          <div class="meta">
-            <div class="name">Yash Gujarathi</div>
-            <div class="role">Enrollment: 0403AL231075 — B.Tech AIML, 3rd Year</div>
-          </div>
-        </a>
+            <div class="profile-card">
+                <div class="avatar-wrapper">
+                    <img src="{% static 'images/vedansh.jpg' %}" alt="Vedansh" class="avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                    <div class="initials-fallback" style="display:none;">VJ</div>
+                </div>
+                <div class="profile-name">Vedansh Joshi</div>
+                <div class="profile-role">Developer</div>
+                <div class="profile-id">0403AL231072</div>
+                <div>
+                    <a href="https://www.linkedin.com/in/vedansh-joshi-22951230b/" target="_blank" class="linkedin-btn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
 
-        <a href="https://www.linkedin.com" target="_blank" class="profile">
-          <div class="avatar">
-            <img src="{% static 'images/yash_p.jpg' %}" alt="Yash Pathak" onerror="this.style.display='none'">
-            <span class="initials">YP</span>
-          </div>
-          <div class="meta">
-            <div class="name">Yash Pathak</div>
-            <div class="role">Enrollment: 0403AL231076 — B.Tech AIML, 3rd Year</div>
-          </div>
-        </a>
-      </div>
-    </div>
-  </section>
+            <div class="profile-card">
+                <div class="avatar-wrapper">
+                    <img src="{% static 'images/yash_g.jpg' %}" alt="Yash G" class="avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                    <div class="initials-fallback" style="display:none;">YG</div>
+                </div>
+                <div class="profile-name">Yash Gujarathi</div>
+                <div class="profile-role">Developer</div>
+                <div class="profile-id">0403AL231075</div>
+                <div>
+                    <a href="https://www.linkedin.com/in/yash-gujarathi-288886380/" target="_blank" class="linkedin-btn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
 
-  <!-- ✅ Footer -->
-  <footer>
-    &copy; 2025 BMI Calculator & Health Instruction System. All rights reserved.
-  </footer>
+            <div class="profile-card">
+                <div class="avatar-wrapper">
+                    <img src="{% static 'images/yash_p.jpg' %}" alt="Yash P" class="avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                    <div class="initials-fallback" style="display:none;">YP</div>
+                </div>
+                <div class="profile-name">Yash Pathak</div>
+                <div class="profile-role">Developer</div>
+                <div class="profile-id">0403AL231076</div>
+                <div>
+                    <a href="https://www.linkedin.com" target="_blank" class="linkedin-btn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        &copy; 2025 BMI Calculator & Health Instruction System. All rights reserved.
+    </footer>
+
 </body>
 </html>

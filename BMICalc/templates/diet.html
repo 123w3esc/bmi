@@ -5,343 +5,546 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Diet Plan - BMI Calculator</title>
+  
   {% include "fevicon.html" %}
 
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <style>
+    /* --- DARK KINETIC THEME VARIABLES --- */
+    :root {
+        --bg-body: #0f172a;      /* Deep Navy */
+        --bg-card: #1e293b;      /* Card Background */
+        --primary-text: #f8fafc; /* White */
+        --secondary-text: #94a3b8; /* Muted Grey */
+        --accent: #3b82f6;       /* Electric Blue */
+        --accent-glow: rgba(59, 130, 246, 0.5);
+        --gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        --glass: rgba(30, 41, 59, 0.7);
+        --border: rgba(255, 255, 255, 0.08);
+        --success: #10b981;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #003366, #2ecc71);
-      min-height: 100vh;
-      color: #333;
-      margin: 0;
+        font-family: 'Outfit', sans-serif;
+        background-color: var(--bg-body);
+        color: var(--primary-text);
+        line-height: 1.6;
+        min-height: 100vh;
+        overflow-x: hidden;
     }
 
-    /* Slim nav bar */
+    /* Background Glow Effect */
+    body::before {
+        content: ''; position: fixed; top: -100px; right: -100px;
+        width: 600px; height: 600px; background: var(--accent);
+        filter: blur(180px); opacity: 0.15; z-index: -1;
+    }
+
+    /* --- NAVIGATION --- */
     nav {
-      background: linear-gradient(90deg, #003366, #005f8e);
-      color: #fff;
-      padding: 8px 25px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        padding: 15px 40px;
+        display: flex; justify-content: space-between; align-items: center;
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        position: sticky; top: 0; z-index: 1000;
     }
-    nav h1 { font-size: 1.2rem; font-weight: 600; color: #fff; }
-    nav ul { list-style: none; display: flex; gap: 15px; }
+
+    nav h1 {
+        font-size: 1.4rem; font-weight: 800; color: var(--primary-text);
+        letter-spacing: 1px; text-transform: uppercase; margin: 0;
+    }
+    nav h1 i { color: var(--accent); margin-right: 8px; }
+
+    nav ul { list-style: none; display: flex; gap: 25px; align-items: center; }
+    
     nav ul li a {
-      text-decoration: none;
-      color: #fff;
-      font-weight: 500;
-      font-size: 0.95rem;
-      transition: color 0.3s ease;
+        text-decoration: none; color: var(--secondary-text); font-weight: 600; transition: 0.3s; font-size: 0.95rem;
     }
-    nav ul li a:hover { color: #2ecc71; }
+    nav ul li a:hover { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
 
+    /* --- CONTAINER --- */
     .container {
-      max-width: 1100px;
-      margin: 40px auto;
-      background: #fff;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        max-width: 1200px;
+        margin: 40px auto;
+        background: var(--glass);
+        backdrop-filter: blur(12px);
+        padding: 40px;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.3);
     }
+
     h2 {
-      text-align: center;
-      margin-bottom: 20px;
-      color: #003366;
-      font-size: 2rem;
-      font-weight: 700;
+        text-align: center; margin-bottom: 40px; font-size: 2.2rem; font-weight: 800;
+        background: linear-gradient(to right, #fff, #94a3b8);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
-    /* Separate container for schedule */
-.schedule-container {
-  margin-top: 40px;
-  text-align: center;
-}
 
-.btn-toggle {
-  padding: 12px 25px;
-  background: linear-gradient(90deg, #003366, #2ecc71);
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.3s ease;
-  margin-bottom: 20px;
-}
-.btn-toggle:hover { opacity: 0.9; transform: translateY(-2px); }
-
-.schedule-box {
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: max-height 0.6s ease, opacity 0.6s ease;
-  margin: 0 auto;
-  max-width: 600px;
-}
-
-.schedule-box ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.schedule-box li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #fff;
-  margin: 8px 0;
-  padding: 12px 18px;
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  /* hover removed */
-}
-
-.schedule-box li .time {
-  font-weight: 600;
-  color: #003366;
-  font-size: 0.95rem;
-}
-
-.schedule-box li .activity {
-  font-size: 0.9rem;
-  color: #2ecc71;
-  font-style: italic;
-}
-    /* 3×2 matrix for 6 items */
+    /* --- DIET GRID --- */
     .diet-container {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
     }
+
     .food-card {
-      background: #f9f9f9;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      text-align: center;
-      padding: 15px;
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px;
+        text-align: center;
+        transition: 0.3s;
+        position: relative;
+        overflow: hidden;
     }
+
+    .food-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--accent);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
     .food-card img {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
-      border-radius: 8px;
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
-    .food-card h3 { margin: 10px 0; color: #005f8e; }
-    .food-card h3 a { text-decoration: none; color: #005f8e; }
-    .food-card h3 a:hover { color: #2ecc71; }
-    .nutrition { font-size: 14px; text-align: left; margin-top: 10px; color: #333; }
-    .nutrition p { margin: 4px 0; }
+
+    .food-card h3 {
+        margin: 10px 0; font-size: 1.2rem;
+    }
+
+    .food-card h3 a {
+        text-decoration: none; color: var(--accent); font-weight: 700; transition: 0.3s;
+    }
+
+    .food-card h3 a:hover {
+        color: white; text-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    /* Nutrition Data Styling */
+    .nutrition {
+        text-align: left; margin-top: 15px; 
+        background: rgba(255, 255, 255, 0.03);
+        padding: 15px; border-radius: 10px;
+    }
+
+    .nutrition p {
+        margin: 6px 0; font-size: 0.9rem; color: var(--secondary-text);
+        display: flex; justify-content: space-between;
+    }
+
+    .nutrition p span {
+        color: var(--primary-text); font-weight: 600;
+    }
+
+    /* --- SCHEDULE SECTION --- */
+    .schedule-container {
+        margin-top: 60px;
+        text-align: center;
+        position: relative;
+    }
+
+    .btn-toggle {
+        padding: 12px 30px;
+        background: var(--gradient);
+        color: #fff;
+        border: none;
+        border-radius: 50px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.3s;
+        text-transform: uppercase; letter-spacing: 1px;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        margin-bottom: 30px;
+    }
+
+    .btn-toggle:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0 25px var(--accent-glow);
+    }
+
+    .schedule-box {
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: max-height 0.6s ease, opacity 0.6s ease;
+        margin: 0 auto;
+        max-width: 700px;
+    }
+
+    .schedule-box ul {
+        list-style: none; padding: 0; margin: 0;
+    }
+
+    .schedule-box li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(30, 41, 59, 0.4);
+        margin: 10px 0;
+        padding: 15px 25px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        transition: 0.3s;
+    }
+
+    .schedule-box li:hover {
+        border-color: var(--accent);
+        background: rgba(30, 41, 59, 0.8);
+    }
+
+    .schedule-box li .time {
+        font-weight: 700;
+        color: var(--accent);
+        font-size: 1rem;
+    }
+
+    .schedule-box li .activity {
+        font-size: 0.95rem;
+        color: var(--primary-text);
+        font-style: normal;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        nav { flex-direction: column; gap: 15px; }
+        .container { margin: 20px; padding: 20px; }
+        .diet-container { grid-template-columns: 1fr; }
+    }
   </style>
+
+  <script>
+    function toggleSchedule() {
+      const box = document.getElementById("scheduleBox");
+      const btn = document.querySelector(".btn-toggle");
+      if (box.style.maxHeight && box.style.maxHeight !== "0px") {
+        box.style.maxHeight = "0";
+        box.style.opacity = "0";
+        btn.innerHTML = "View Schedule <i class='fas fa-chevron-down' style='margin-left:8px'></i>";
+      } else {
+        box.style.maxHeight = box.scrollHeight + "px";
+        box.style.opacity = "1";
+        btn.innerHTML = "Hide Schedule <i class='fas fa-chevron-up' style='margin-left:8px'></i>";
+      }
+    }
+  </script>
 </head>
-<script>
-function toggleSchedule() {
-  const box = document.getElementById("scheduleBox");
-  const btn = document.querySelector(".btn-toggle");
-  if (box.style.maxHeight && box.style.maxHeight !== "0px") {
-    box.style.maxHeight = "0";
-    box.style.opacity = "0";
-    btn.textContent = "View Schedule";
-  } else {
-    box.style.maxHeight = box.scrollHeight + "px";
-    box.style.opacity = "1";
-    btn.textContent = "Hide Schedule";
-  }
-}
-</script>
 <body>
 
-  <!-- Navigation -->
   <nav>
-    <h1>BMI System</h1>
+    <h1><i class="fas fa-utensils"></i> BMI System</h1>
     <ul>
       <li><a href="{% url 'user' %}">User Home</a></li>
       <li><a href="{% url 'track_progress' %}">Track Progress</a></li>
       <li><a href="{% url 'workout_plan' status %}">View Workout</a></li>
-      <li><a href="{% url 'logout' %}">Logout</a></li>
+      <li><a href="{% url 'logout' %}" style="color: #ef4444;">Logout</a></li>
     </ul>
   </nav>
 
-  <!-- Diet Plan -->
   <div class="container">
-    <h2>Diet Plan for {{ status }}</h2>
+    <h2>Diet Plan for <span style="color: var(--accent);">{{ status }}</span></h2>
 
     <div class="diet-container">
       {% if status == "Underweight" %}
         <div class="food-card">
           <img src="{% static 'images/oatmeal.jpg' %}" alt="Oatmeal">
           <h3><a href="https://www.google.com/search?q=Oatmeal+Peanut+Butter" target="_blank">Oatmeal + Peanut Butter</a></h3>
-          <div class="nutrition"><p>Protein: 13 g</p><p>Calories: 311 kcal</p><p>Carbs: 53 g</p><p>Quantity: 1 bowl / 80 g</p></div>
+          <div class="nutrition">
+              <p>Protein <span>13 g</span></p>
+              <p>Calories <span>311 kcal</span></p>
+              <p>Carbs <span>53 g</span></p>
+              <p>Quantity <span>1 bowl / 80 g</span></p>
+          </div>
         </div>
         <div class="food-card">
           <img src="{% static 'images/smoothie.jpg' %}" alt="Banana Smoothie">
           <h3><a href="https://www.google.com/search?q=Banana+Smoothie" target="_blank">Banana Smoothie</a></h3>
-          <div class="nutrition"><p>Protein: 3 g</p><p>Calories: 225 kcal</p><p>Carbs: 58 g</p><p>Quantity: 1 glass / 250 g</p></div>
+          <div class="nutrition">
+              <p>Protein <span>3 g</span></p>
+              <p>Calories <span>225 kcal</span></p>
+              <p>Carbs <span>58 g</span></p>
+              <p>Quantity <span>1 glass / 250 g</span></p>
+          </div>
         </div>
         <div class="food-card">
           <img src="{% static 'images/eggs.jpg' %}" alt="Scrambled Eggs">
-          <h3><a href="https://www.google.com/search?q=Scrambled+Eggs" target="_blank"> Eggs</a></h3>
-          <div class="nutrition"><p>Protein: 13 g</p><p>Calories: 143 kcal</p><p>Carbs: 1 g</p><p>Quantity: 2 eggs / 100 g</p></div>
+          <h3><a href="https://www.google.com/search?q=Scrambled+Eggs" target="_blank">Scrambled Eggs</a></h3>
+          <div class="nutrition">
+              <p>Protein <span>13 g</span></p>
+              <p>Calories <span>143 kcal</span></p>
+              <p>Carbs <span>1 g</span></p>
+              <p>Quantity <span>2 eggs / 100 g</span></p>
+          </div>
         </div>
         <div class="food-card">
           <img src="{% static 'images/chicken_curry.jpg' %}" alt="Chicken Curry + Rice">
           <h3><a href="https://www.google.com/search?q=Chicken+Curry+Rice" target="_blank">Chicken Curry + Rice</a></h3>
-          <div class="nutrition"><p>Protein: 45 g</p><p>Calories: 550 kcal</p><p>Carbs: 50 g</p><p>Quantity: 1 plate / 250 g</p></div>
+          <div class="nutrition">
+              <p>Protein <span>45 g</span></p>
+              <p>Calories <span>550 kcal</span></p>
+              <p>Carbs <span>50 g</span></p>
+              <p>Quantity <span>1 plate / 250 g</span></p>
+          </div>
         </div>
         <div class="food-card">
           <img src="{% static 'images/nuts.jpg' %}" alt="Mixed Nuts">
           <h3><a href="https://www.google.com/search?q=Mixed+Nuts" target="_blank">Mixed Nuts</a></h3>
-          <div class="nutrition"><p>Protein: 8 g</p><p>Calories: 243 kcal</p><p>Carbs: 8 g</p><p>Quantity: 1 handful / 40 g</p></div>
+          <div class="nutrition">
+              <p>Protein <span>8 g</span></p>
+              <p>Calories <span>243 kcal</span></p>
+              <p>Carbs <span>8 g</span></p>
+              <p>Quantity <span>1 handful / 40 g</span></p>
+          </div>
         </div>
         <div class="food-card">
           <img src="{% static 'images/milk.jpg' %}" alt="Whole Milk">
-          <h3><a href="https://www.google.com/search?q=Whole+Milk" target="_blank">Milk</a></h3>
-          <div class="nutrition"><p>Protein: 8 g</p><p>Calories: 153 kcal</p><p>Carbs: 12 g</p><p>Quantity: 1 glass / 250 g</p></div>
+          <h3><a href="https://www.google.com/search?q=Whole+Milk" target="_blank">Whole Milk</a></h3>
+          <div class="nutrition">
+              <p>Protein <span>8 g</span></p>
+              <p>Calories <span>153 kcal</span></p>
+              <p>Carbs <span>12 g</span></p>
+              <p>Quantity <span>1 glass / 250 g</span></p>
+          </div>
         </div>
 
       {% elif status == "Normal" %}
         <div class="food-card">
           <img src="{% static 'images/grilled_fish.jpg' %}" alt="Grilled Fish + Brown Rice">
-          <h3><a href="https://www.google.com/search?q=Grilled+Fish+Brown+Rice" target="_blank">Grilled Fish </a></h3>
-          <div class="nutrition"><p>Protein: 25 g</p><p>Calories: 420 kcal</p><p>Carbs: 50 g</p><p>Quantity: 1 plate / 200 g</p></div>
+          <h3><a href="https://www.google.com/search?q=Grilled+Fish+Brown+Rice" target="_blank">Grilled Fish</a></h3>
+          <div class="nutrition">
+              <p>Protein <span>25 g</span></p>
+              <p>Calories <span>420 kcal</span></p>
+              <p>Carbs <span>50 g</span></p>
+              <p>Quantity <span>1 plate / 200 g</span></p>
+          </div>
         </div>
         <div class="food-card">
           <img src="{% static 'images/fruit_salad.jpg' %}" alt="Fruit Salad">
           <h3><a href="https://www.google.com/search?q=Fruit+Salad" target="_blank">Fruit Salad</a></h3>
-          <div class="nutrition"><p>Protein: 2 g</p><p>Calories: 180 kcal</p><p>Carbs: 46 g</p><p>Quantity: 1 bowl / 200 g</p></div>
+          <div class="nutrition">
+              <p>Protein <span>2 g</span></p>
+              <p>Calories <span>180 kcal</span></p>
+              <p>Carbs <span>46 g</span></p>
+              <p>Quantity <span>1 bowl / 200 g</span></p>
+          </div>
         </div>
         <div class="food-card">
           <img src="{% static 'images/vegetable_stirfry.jpg' %}" alt="Vegetable Stir-fry">
           <h3><a href="https://www.google.com/search?q=Vegetable+Stir+Fry" target="_blank">Vegetable Stir-fry</a></h3>
-          <div class="nutrition"><p>Protein: 6 g</p><p>Calories: 250 kcal</p><p>Carbs: 30 g</p><p>Quantity: 1 plate / 200 g</p></div>
+          <div class="nutrition">
+              <p>Protein <span>6 g</span></p>
+              <p>Calories <span>250 kcal</span></p>
+              <p>Carbs <span>30 g</span></p>
+              <p>Quantity <span>1 plate / 200 g</span></p>
+          </div>
         </div>
         <div class="food-card">
           <img src="{% static 'images/yogurt.jpg' %}" alt="Greek Yogurt">
           <h3><a href="https://www.google.com/search?q=Greek+Yogurt" target="_blank">Yogurt/Curd</a></h3>
-          <div class="nutrition"><p>Protein: 20 g</p><p>Calories: 118 kcal</p><p>Carbs: 7 g</p><p>Quantity: 1 cup / 200 g</p></div>
+          <div class="nutrition">
+              <p>Protein <span>20 g</span></p>
+              <p>Calories <span>118 kcal</span></p>
+              <p>Carbs <span>7 g</span></p>
+              <p>Quantity <span>1 cup / 200 g</span></p>
+          </div>
         </div>
         <div class="food-card">
           <img src="{% static 'images/chicken_salad.jpg' %}" alt="Chicken Salad">
           <h3><a href="https://www.google.com/search?q=Chicken+Salad" target="_blank">Chicken Salad</a></h3>
-          <div class="nutrition"><p>Protein: 28 g</p><p>Calories: 300 kcal</p><p>Carbs: 12 g</p><p>Quantity: 1 plate / 200 g</p></div>
+          <div class="nutrition">
+              <p>Protein <span>28 g</span></p>
+              <p>Calories <span>300 kcal</span></p>
+              <p>Carbs <span>12 g</span></p>
+              <p>Quantity <span>1 plate / 200 g</span></p>
+          </div>
         </div>
         <div class="food-card">
           <img src="{% static 'images/soup.jpg' %}" alt="Vegetable Soup">
           <h3><a href="https://www.google.com/search?q=Vegetable+Soup" target="_blank">Vegetable Soup</a></h3>
-          <div class="nutrition"><p>Protein: 5 g</p><p>Calories: 150 kcal</p><p>Carbs: 20 g</p><p>Quantity: 1 bowl / 200 g</p></div>
+          <div class="nutrition">
+              <p>Protein <span>5 g</span></p>
+              <p>Calories <span>150 kcal</span></p>
+              <p>Carbs <span>20 g</span></p>
+              <p>Quantity <span>1 bowl / 200 g</span></p>
+          </div>
         </div>
 
       {% elif status == "Overweight" %}
         <div class="food-card">
           <img src="{% static 'images/lentil_soup.jpg' %}" alt="Lentil Soup">
           <h3><a href="https://www.google.com/search?q=Lentil+Soup" target="_blank">Lentil Soup</a></h3>
-          <div class="nutrition"><p>Protein: 14 g</p><p>Calories: 220 kcal</p><p>Carbs: 30 g</p><p>Quantity: 1 bowl / 200 g</p></div>
+          <div class="nutrition">
+              <p>Protein <span>14 g</span></p>
+              <p>Calories <span>220 kcal</span></p>
+              <p>Carbs <span>30 g</span></p>
+              <p>Quantity <span>1 bowl / 200 g</span></p>
+          </div>
         </div>
         <div class="food-card">
           <img src="{% static 'images/salad.jpg' %}" alt="Grilled Chicken Salad">
-          <h3><a href="https://www.google.com/search?q=Grilled+Chicken+Salad" target="_blank">Grilled Chicken </a></h3>
-          <div class="nutrition"><p>Protein: 28 g</p><p>Calories: 300 kcal</p><p>Carbs: 12 g</p><p>Quantity: 1 plate / 200 g</p></div>
+          <h3><a href="https://www.google.com/search?q=Grilled+Chicken+Salad" target="_blank">Grilled Chicken</a></h3>
+          <div class="nutrition">
+              <p>Protein <span>28 g</span></p>
+              <p>Calories <span>300 kcal</span></p>
+              <p>Carbs <span>12 g</span></p>
+              <p>Quantity <span>1 plate / 200 g</span></p>
+          </div>
         </div>
         <div class="food-card">
           <img src="{% static 'images/quinoa.jpg' %}" alt="Quinoa Bowl">
           <h3><a href="https://www.google.com/search?q=Quinoa+Bowl" target="_blank">Quinoa Bowl</a></h3>
-          <div class="nutrition"><p>Protein: 9 g</p><p>Calories: 280 kcal</p><p>Carbs: 40 g</p><p>Quantity: 1 bowl / 200 g</p></div>
+          <div class="nutrition">
+              <p>Protein <span>9 g</span></p>
+              <p>Calories <span>280 kcal</span></p>
+              <p>Carbs <span>40 g</span></p>
+              <p>Quantity <span>1 bowl / 200 g</span></p>
+          </div>
         </div>
         <div class="food-card">
           <img src="{% static 'images/green_smoothie.jpg' %}" alt="Green Smoothie">
           <h3><a href="https://www.google.com/search?q=Green+Smoothie" target="_blank">Green Smoothie</a></h3>
-          <div class="nutrition"><p>Protein: 5 g</p><p>Calories: 200 kcal</p><p>Carbs: 38 g</p><p>Quantity: 1 glass / 250 g</p></div>
+          <div class="nutrition">
+              <p>Protein <span>5 g</span></p>
+              <p>Calories <span>200 kcal</span></p>
+              <p>Carbs <span>38 g</span></p>
+              <p>Quantity <span>1 glass / 250 g</span></p>
+          </div>
         </div>
         <div class="food-card">
           <img src="{% static 'images/roti.jpg' %}" alt="Whole Wheat Roti + Sabzi">
           <h3><a href="https://www.google.com/search?q=Whole+Wheat+Roti+Sabzi" target="_blank">Wheat Roti + Sabzi</a></h3>
-          <div class="nutrition"><p>Protein: 12 g</p><p>Calories: 350 kcal</p><p>Carbs: 50 g</p><p>Quantity: 2 roti + sabzi / 200 g</p></div>
+          <div class="nutrition">
+              <p>Protein <span>12 g</span></p>
+              <p>Calories <span>350 kcal</span></p>
+              <p>Carbs <span>50 g</span></p>
+              <p>Quantity <span>2 roti + sabzi / 200 g</span></p>
+          </div>
         </div>
         <div class="food-card">
           <img src="{% static 'images/beans.jpg' %}" alt="Steamed Beans">
           <h3><a href="https://www.google.com/search?q=Steamed+Beans" target="_blank">Steamed Beans</a></h3>
-          <div class="nutrition"><p>Protein: 8 g</p><p>Calories: 120 kcal</p><p>Carbs: 14 g</p><p>Quantity: 1 cup / 200 g</p></div>
+          <div class="nutrition">
+              <p>Protein <span>8 g</span></p>
+              <p>Calories <span>120 kcal</span></p>
+              <p>Carbs <span>14 g</span></p>
+              <p>Quantity <span>1 cup / 200 g</span></p>
+          </div>
         </div>
 
       {% elif status == "Obese" %}
         <div class="food-card">
           <img src="{% static 'images/steamed_veggies.jpg' %}" alt="Steamed Vegetables">
           <h3><a href="https://www.google.com/search?q=Steamed+Vegetables" target="_blank">Steamed Vegetables</a></h3>
-          <div class="nutrition"><p>Protein: 6 g</p><p>Calories: 150 kcal</p><p>Carbs: 24 g</p><p>Quantity: 1 bowl / 200 g</p></div>
+          <div class="nutrition">
+              <p>Protein <span>6 g</span></p>
+              <p>Calories <span>150 kcal</span></p>
+              <p>Carbs <span>24 g</span></p>
+              <p>Quantity <span>1 bowl / 200 g</span></p>
+          </div>
         </div>
         <div class="food-card">
           <img src="{% static 'images/baked_fish.jpg' %}" alt="Baked Fish">
           <h3><a href="https://www.google.com/search?q=Baked+Fish" target="_blank">Baked Fish</a></h3>
-          <div class="nutrition"><p>Protein: 36 g</p><p>Calories: 300 kcal</p><p>Carbs: 0 g</p><p>Quantity: 1 fillet / 150 g</p></div>
+          <div class="nutrition">
+              <p>Protein <span>36 g</span></p>
+              <p>Calories <span>300 kcal</span></p>
+              <p>Carbs <span>0 g</span></p>
+              <p>Quantity <span>1 fillet / 150 g</span></p>
+          </div>
         </div>
         <div class="food-card">
           <img src="{% static 'images/sprouts.jpg' %}" alt="Mixed Sprouts">
           <h3><a href="https://www.google.com/search?q=Mixed+Sprouts" target="_blank">Mixed Sprouts</a></h3>
-          <div class="nutrition"><p>Protein: 12 g</p><p>Calories: 200 kcal</p><p>Carbs: 36 g</p><p>Quantity: 1 bowl / 200 g</p></div>
+          <div class="nutrition">
+              <p>Protein <span>12 g</span></p>
+              <p>Calories <span>200 kcal</span></p>
+              <p>Carbs <span>36 g</span></p>
+              <p>Quantity <span>1 bowl / 200 g</span></p>
+          </div>
         </div>
         <div class="food-card">
           <img src="{% static 'images/soup_clear.jpg' %}" alt="Clear Vegetable Soup">
           <h3><a href="https://www.google.com/search?q=Clear+Vegetable+Soup" target="_blank">Vegetable Soup</a></h3>
-          <div class="nutrition"><p>Protein: 4 g</p><p>Calories: 120 kcal</p><p>Carbs: 18 g</p><p>Quantity: 1 bowl / 200 g</p></div>
+          <div class="nutrition">
+              <p>Protein <span>4 g</span></p>
+              <p>Calories <span>120 kcal</span></p>
+              <p>Carbs <span>18 g</span></p>
+              <p>Quantity <span>1 bowl / 200 g</span></p>
+          </div>
         </div>
         <div class="food-card">
           <img src="{% static 'images/grilled_chicken.jpg' %}" alt="Grilled Chicken Breast">
-          <h3><a href="https://www.google.com/search?q=Grilled+Chicken+Breast" target="_blank">Grilled Chicken </a></h3>
-          <div class="nutrition"><p>Protein: 46 g</p><p>Calories: 285 kcal</p><p>Carbs: 0 g</p><p>Quantity: 1 portion / 150 g</p></div>
+          <h3><a href="https://www.google.com/search?q=Grilled+Chicken+Breast" target="_blank">Grilled Chicken</a></h3>
+          <div class="nutrition">
+              <p>Protein <span>46 g</span></p>
+              <p>Calories <span>285 kcal</span></p>
+              <p>Carbs <span>0 g</span></p>
+              <p>Quantity <span>1 portion / 150 g</span></p>
+          </div>
         </div>
         <div class="food-card">
           <img src="{% static 'images/quinoa_salad.jpg' %}" alt="Quinoa Vegetable Salad">
-          <h3><a href="https://www.google.com/search?q=Quinoa+Vegetable+Salad" target="_blank"> Vegetable Salad</a></h3>
-          <div class="nutrition"><p>Protein: 8 g</p><p>Calories: 260 kcal</p><p>Carbs: 40 g</p><p>Quantity: 1 bowl / 200 g</p></div>
+          <h3><a href="https://www.google.com/search?q=Quinoa+Vegetable+Salad" target="_blank">Vegetable Salad</a></h3>
+          <div class="nutrition">
+              <p>Protein <span>8 g</span></p>
+              <p>Calories <span>260 kcal</span></p>
+              <p>Carbs <span>40 g</span></p>
+              <p>Quantity <span>1 bowl / 200 g</span></p>
+          </div>
         </div>
       {% endif %}
     </div>
-<!-- Separate Schedule Container -->
-<div class="schedule-container">
-  <!-- Centered Toggle Button -->
-  <button class="btn-toggle" onclick="toggleSchedule()">View Schedule</button>
 
-  <!-- Hidden Schedule Section -->
-  <div id="scheduleBox" class="schedule-box">
-    {% if status == "Underweight" %}
-      <ul>
-        <li><span class="time">7:00 AM</span><span class="activity">Heavy breakfast</span></li>
-        <li><span class="time">10:00 AM</span><span class="activity">Mid‑morning snack</span></li>
-        <li><span class="time">1:00 PM</span><span class="activity">Balanced lunch</span></li>
-        <li><span class="time">4:00 PM</span><span class="activity">Energy snack</span></li>
-        <li><span class="time">7:00 PM</span><span class="activity">Strength workout</span></li>
-        <li><span class="time">8:00 PM</span><span class="activity">Light dinner</span></li>
-        <li><span class="time">10:00 PM</span><span class="activity">Bedtime snack</span></li>
-      </ul>
-    {% elif status == "Normal" %}
-      <ul>
-        <li><span class="time">7:30 AM</span><span class="activity">Moderate breakfast</span></li>
-        <li><span class="time">12:30 PM</span><span class="activity">Balanced lunch</span></li>
-        <li><span class="time">4:00 PM</span><span class="activity">Light snack</span></li>
-        <li><span class="time">6:30 PM</span><span class="activity">Evening workout</span></li>
-        <li><span class="time">8:00 PM</span><span class="activity">Light dinner</span></li>
-      </ul>
-    {% elif status == "Overweight" %}
-      <ul>
-        <li><span class="time">7:30 AM</span><span class="activity">Light breakfast</span></li>
-        <li><span class="time">12:00 PM</span><span class="activity">Controlled lunch</span></li>
-        <li><span class="time">3:30 PM</span><span class="activity">Healthy snack</span></li>
-        <li><span class="time">6:30 PM</span><span class="activity">Cardio workout</span></li>
-        <li><span class="time">8:00 PM</span><span class="activity">Very light dinner</span></li>
-      </ul>
-    {% elif status == "Obese" %}
-      <ul>
-        <li><span class="time">8:00 AM</span><span class="activity">Very light breakfast</span></li>
-        <li><span class="time">1:00 PM</span><span class="activity">Small lunch</span></li>
-        <li><span class="time">5:00 PM</span><span class="activity">Light snack</span></li>
-        <li><span class="time">7:00 PM</span><span class="activity">Gentle workout</span></li>
-        <li><span class="time">8:00 PM</span><span class="activity">Soup‑style dinner</span></li>
-      </ul>
-    {% endif %}
-  </div>
-</div>
+    <div class="schedule-container">
+      <button class="btn-toggle" onclick="toggleSchedule()">View Schedule <i class="fas fa-chevron-down" style="margin-left:8px"></i></button>
+
+      <div id="scheduleBox" class="schedule-box">
+        {% if status == "Underweight" %}
+          <ul>
+            <li><span class="time"><i class="far fa-clock"></i> 7:00 AM</span><span class="activity">Heavy breakfast</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 10:00 AM</span><span class="activity">Mid‑morning snack</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 1:00 PM</span><span class="activity">Balanced lunch</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 4:00 PM</span><span class="activity">Energy snack</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 7:00 PM</span><span class="activity">Strength workout</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 8:00 PM</span><span class="activity">Light dinner</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 10:00 PM</span><span class="activity">Bedtime snack</span></li>
+          </ul>
+        {% elif status == "Normal" %}
+          <ul>
+            <li><span class="time"><i class="far fa-clock"></i> 7:30 AM</span><span class="activity">Moderate breakfast</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 12:30 PM</span><span class="activity">Balanced lunch</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 4:00 PM</span><span class="activity">Light snack</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 6:30 PM</span><span class="activity">Evening workout</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 8:00 PM</span><span class="activity">Light dinner</span></li>
+          </ul>
+        {% elif status == "Overweight" %}
+          <ul>
+            <li><span class="time"><i class="far fa-clock"></i> 7:30 AM</span><span class="activity">Light breakfast</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 12:00 PM</span><span class="activity">Controlled lunch</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 3:30 PM</span><span class="activity">Healthy snack</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 6:30 PM</span><span class="activity">Cardio workout</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 8:00 PM</span><span class="activity">Very light dinner</span></li>
+          </ul>
+        {% elif status == "Obese" %}
+          <ul>
+            <li><span class="time"><i class="far fa-clock"></i> 8:00 AM</span><span class="activity">Very light breakfast</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 1:00 PM</span><span class="activity">Small lunch</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 5:00 PM</span><span class="activity">Light snack</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 7:00 PM</span><span class="activity">Gentle workout</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 8:00 PM</span><span class="activity">Soup‑style dinner</span></li>
+          </ul>
+        {% endif %}
+      </div>
+    </div>
   </div>
 
 </body>

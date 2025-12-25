@@ -5,176 +5,260 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Manage Users - Admin Panel</title>
+  
   {% include "fevicon.html" %}
 
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #003366, #2ecc71);
-      min-height: 100vh;
-      color: #333;
+    /* --- DARK KINETIC THEME VARIABLES --- */
+    :root {
+        --bg-body: #0f172a;      /* Deep Navy */
+        --bg-card: #1e293b;      /* Card Background */
+        --primary-text: #f8fafc; /* White */
+        --secondary-text: #94a3b8; /* Muted Grey */
+        --accent: #3b82f6;       /* Electric Blue */
+        --accent-glow: rgba(59, 130, 246, 0.5);
+        --glass: rgba(30, 41, 59, 0.7);
+        --border: rgba(255, 255, 255, 0.08);
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
     }
 
-    /* ✅ Navigation Bar */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: 'Outfit', sans-serif;
+        background-color: var(--bg-body);
+        color: var(--primary-text);
+        line-height: 1.6;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    /* Background Glow */
+    body::before {
+        content: ''; position: fixed; top: -100px; right: -100px;
+        width: 600px; height: 600px; background: var(--accent);
+        filter: blur(180px); opacity: 0.15; z-index: -1;
+    }
+
+    /* --- NAVIGATION --- */
     nav {
-      background: linear-gradient(90deg, #003366, #005f8e);
-      color: #fff;
-      padding: 15px 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        padding: 15px 40px;
+        display: flex; justify-content: space-between; align-items: center;
+        background: rgba(15, 23, 42, 0.9);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        position: sticky; top: 0; z-index: 1000;
     }
 
     nav h1 {
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: #fff;
+        font-size: 1.5rem; font-weight: 800; color: var(--primary-text);
+        text-transform: uppercase; letter-spacing: 1px;
     }
+    nav h1 i { color: var(--accent); margin-right: 10px; }
 
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 20px;
-    }
+    nav ul { list-style: none; display: flex; gap: 25px; align-items: center; }
 
     nav ul li a {
-      text-decoration: none;
-      color: #fff;
-      font-weight: 500;
-      font-size: 1rem;
-      transition: color 0.3s ease;
+        text-decoration: none; color: var(--secondary-text); font-weight: 600; transition: 0.3s;
     }
+    nav ul li a:hover { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
 
-    nav ul li a:hover {
-      color: #2ecc71;
-    }
-
-    /* ✅ Wide Container */
+    /* --- CONTAINER --- */
     .container {
-      width: 95%;              /* ✅ make container wide */
-      max-width: 1400px;       /* ✅ allow more space */
-      margin: 40px auto;
-      background: #fff;
-      padding: 25px;
-      border-radius: 14px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
-      animation: fadeIn 1s ease-in-out;
+        width: 95%; max-width: 1400px;
+        margin: 40px auto;
+        background: var(--glass);
+        backdrop-filter: blur(12px);
+        padding: 30px;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        animation: fadeIn 0.8s ease-out;
     }
+
     h2 {
-      margin-bottom: 20px;
-      color: #003366;
-      font-size: 1.5rem;
-      font-weight: 700;
-      text-align: center;
+        margin-bottom: 30px; color: var(--primary-text);
+        font-size: 2rem; font-weight: 800; text-align: center;
+        background: linear-gradient(to right, #fff, #94a3b8);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
 
-    /* ✅ Table */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
+    /* --- TABLE STYLING --- */
+    .table-responsive {
+        overflow-x: auto;
+        border-radius: 12px;
+        border: 1px solid var(--border);
     }
-    table th, table td {
-      padding: 10px;
-      text-align: center;
-      font-size: 0.9rem;
-      border: 1px solid #ddd;
-    }
-    table th {
-      background: linear-gradient(90deg, #003366, #005f8e);
-      color: #fff;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-    table tr:nth-child(even) td { background: #f9f9f9; }
 
-    /* ✅ Buttons */
+    table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+
+    th {
+        background: rgba(59, 130, 246, 0.15);
+        color: var(--accent);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        padding: 18px 12px;
+        border-bottom: 2px solid var(--border);
+    }
+
+    td {
+        padding: 15px 12px;
+        text-align: center;
+        border-bottom: 1px solid var(--border);
+        color: var(--secondary-text);
+        font-size: 0.9rem;
+    }
+
+    tr:hover td {
+        background: rgba(255, 255, 255, 0.02);
+        color: var(--primary-text);
+    }
+
+    /* --- BADGES & BUTTONS --- */
+    /* Status Badge (Static) */
+    .badge {
+        padding: 5px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+    }
+    .badge-success { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-admin { background: rgba(59, 130, 246, 0.15); color: var(--accent); border: 1px solid rgba(59, 130, 246, 0.3); }
+
+    /* Action Buttons */
     .btn {
-      padding: 6px 12px;
-      background: linear-gradient(90deg, #003366, #2ecc71);
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-      transition: transform 0.2s ease, opacity 0.3s ease;
-      font-size: 0.85rem;
-      display: inline-block;
+        padding: 6px 14px; border-radius: 6px; font-weight: 600; font-size: 0.8rem;
+        text-decoration: none; display: inline-flex; align-items: center; gap: 5px;
+        transition: 0.3s; cursor: pointer; border: 1px solid transparent;
     }
-    .btn:hover { opacity: 0.9; transform: translateY(-2px); }
-
     
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 0 15px rgba(0,0,0,0.3); }
+
+    /* Specific Button Colors */
+    .btn-verify {
+        background: rgba(16, 185, 129, 0.1); color: var(--success); border-color: rgba(16, 185, 129, 0.3);
+    }
+    .btn-verify:hover { background: var(--success); color: white; }
+
+    .btn-admin {
+        background: rgba(59, 130, 246, 0.1); color: var(--accent); border-color: rgba(59, 130, 246, 0.3);
+    }
+    .btn-admin:hover { background: var(--accent); color: white; }
+
+    .btn-delete {
+        background: rgba(239, 68, 68, 0.1); color: var(--danger); border-color: rgba(239, 68, 68, 0.3);
+    }
+    .btn-delete:hover { background: var(--danger); color: white; }
+
+    /* Messages */
+    .messages { margin-bottom: 20px; text-align: center; }
+    .success { color: var(--success); font-weight: 600; }
+    .error { color: var(--danger); font-weight: 600; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+        nav { flex-direction: column; gap: 15px; }
+        .container { margin: 20px auto; padding: 15px; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- ✅ Navigation -->
   <nav>
-    <h1>BMI System - Admin</h1>
+    <h1><i class="fas fa-user-shield"></i> Admin Panel</h1>
     <ul>
-      <li><a href="{% url 'admin_home' %}">Home</a></li>
-      <li><a href="{% url 'manage_users' %}">Manage Users</a></li>
-      <li><a href="{% url 'logout' %}">Logout</a></li>
+      <li><a href="{% url 'admin_home' %}">Dashboard</a></li>
+      <li><a href="{% url 'manage_users' %}" style="color: var(--accent);">Manage Users</a></li>
+      <li><a href="{% url 'logout' %}" style="color: var(--danger);">Logout</a></li>
     </ul>
   </nav>
 
-  <!-- ✅ Manage Users Table -->
   <div class="container">
-    <h2>Manage Users</h2>
+    <h2><i class="fas fa-users-cog" style="color: var(--accent); margin-right: 10px;"></i>User Management Database</h2>
 
-    {% if messages %}
-      {% for message in messages %}
-        <p class="{{ message.tags }}">{{ message }}</p>
-      {% endfor %}
-    {% endif %}
+    <div class="messages">
+      {% if messages %}
+        {% for message in messages %}
+          <p class="{{ message.tags }}"><i class="fas fa-info-circle"></i> {{ message }}</p>
+        {% endfor %}
+      {% endif %}
+    </div>
 
-    <table>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Age</th>
-        <th>Gender</th>
-        <th>City</th>
-        <th>Condition</th>
-        <th>Verified</th>
-        <th>Verify</th>
-        <th>Admin</th>
-        <th>Delete</th>
-      </tr>
-      {% for user in users %}
-      <tr>
-        <td>{{ forloop.counter }}</td>
-        <td>{{ user.name }}</td>
-        <td>{{ user.email }}</td>
-        <td>{{ user.age }}</td>
-        <td>{{ user.gender }}</td>
-        <td>{{ user.city }}</td>
-        <td>{{ user.condition|default:"None" }}</td>
-        <td>{{ user.is_verified }}</td>
-        <td>
-          {% if not user.is_verified %}
-            <a href="{% url 'verify_user' user.id %}" class="btn">Verify</a>
-          {% else %}
-            <span style="color:green; font-weight:600;">✔ Verified</span>
-          {% endif %}
-        </td>
-        <td>
-          {% if not user.admin %}
-            <a href="{% url 'make_admin' user.id %}" class="btn">Make Admin</a>
-          {% else %}
-            <span style="color:blue; font-weight:600;">Admin</span>
-          {% endif %}
-        </td>
-        <td>
-          <a href="{% url 'delete_user' user.id %}" class="btn" onclick="return confirm('Delete this user?');">Delete</a>
-        </td>
-      </tr>
-      {% endfor %}
-    </table>
+    <div class="table-responsive">
+        <table>
+        <thead>
+            <tr>
+            <th>ID</th>
+            <th><i class="fas fa-user"></i> Name</th>
+            <th><i class="fas fa-envelope"></i> Email</th>
+            <th>Age</th>
+            <th>Gender</th>
+            <th>City</th>
+            <th>Condition</th>
+            <th>Status</th>
+            <th>Verify Action</th>
+            <th>Role Action</th>
+            <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+            <td style="color: var(--secondary-text); font-family: monospace;">#{{ forloop.counter }}</td>
+            <td style="font-weight: 600; color: var(--primary-text);">{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.age }}</td>
+            <td>{{ user.gender }}</td>
+            <td>{{ user.city }}</td>
+            <td>{{ user.condition|default:"-" }}</td>
+            
+            <td>
+                {% if user.is_verified %}
+                <span class="badge badge-success">Verified</span>
+                {% else %}
+                <span style="color: var(--secondary-text); font-size: 0.8rem;">Pending</span>
+                {% endif %}
+            </td>
+
+            <td>
+                {% if not user.is_verified %}
+                <a href="{% url 'verify_user' user.id %}" class="btn btn-verify">
+                    <i class="fas fa-check"></i> Approve
+                </a>
+                {% else %}
+                <i class="fas fa-check-circle" style="color: var(--success); opacity: 0.5;"></i>
+                {% endif %}
+            </td>
+
+            <td>
+                {% if not user.admin %}
+                <a href="{% url 'make_admin' user.id %}" class="btn btn-admin">
+                    <i class="fas fa-crown"></i> Promote
+                </a>
+                {% else %}
+                <span class="badge badge-admin">Admin</span>
+                {% endif %}
+            </td>
+
+            <td>
+                <a href="{% url 'delete_user' user.id %}" class="btn btn-delete" onclick="return confirm('Are you sure you want to permanently remove this user?');">
+                <i class="fas fa-trash-alt"></i>
+                </a>
+            </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="11" style="padding: 40px; color: var(--secondary-text);">No users found in the database.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+    </div>
   </div>
 
 </body>

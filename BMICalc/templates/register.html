@@ -5,156 +5,212 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Register - BMI Calculator</title>
+  
   {% include "fevicon.html" %}
+
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <style>
+    /* --- DARK KINETIC THEME VARIABLES --- */
+    :root {
+        --bg-body: #0f172a;      /* Deep Navy */
+        --bg-card: #1e293b;      /* Card Background */
+        --primary-text: #f8fafc; /* White */
+        --secondary-text: #94a3b8; /* Muted Grey */
+        --accent: #3b82f6;       /* Electric Blue */
+        --accent-glow: rgba(59, 130, 246, 0.5);
+        --gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        --glass: rgba(30, 41, 59, 0.7);
+        --border: rgba(255, 255, 255, 0.08);
+        --danger: #ef4444;
+        --success: #10b981;
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #f5f7fa;
-      color: #333;
-      line-height: 1.6;
+        font-family: 'Outfit', sans-serif;
+        background-color: var(--bg-body);
+        color: var(--primary-text);
+        line-height: 1.6;
+        min-height: 100vh;
+        overflow-x: hidden;
     }
 
-    /* Navigation Bar */
+    /* Background Glow Effect */
+    body::before {
+        content: ''; position: fixed; top: -100px; right: -100px;
+        width: 500px; height: 500px; background: var(--accent);
+        filter: blur(150px); opacity: 0.2; z-index: -1;
+    }
+
+    /* --- NAVIGATION --- */
     nav {
-      background: linear-gradient(90deg, #003366, #005f8e);
-      color: #fff;
-      padding: 15px 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        padding: 20px 5%;
+        display: flex; justify-content: space-between; align-items: center;
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        position: sticky; top: 0; z-index: 1000;
     }
-    nav h1 { font-size: 1.6rem; font-weight: 700; margin: 0; }
-    nav ul { list-style: none; display: flex; gap: 20px; margin: 0; padding: 0; }
-    nav ul li a { text-decoration: none; color: #fff; font-weight: 500; transition: color 0.3s ease; }
-    nav ul li a:hover { color: #2ecc71; }
 
-    /* Hero */
+    nav h1 {
+        font-size: 1.5rem; font-weight: 800; color: var(--primary-text);
+        letter-spacing: 1px; text-transform: uppercase; margin: 0;
+    }
+
+    nav h1 i { color: var(--accent); margin-right: 8px; }
+
+    nav ul { list-style: none; display: flex; gap: 30px; align-items: center; }
+    
+    nav ul li a {
+        text-decoration: none; color: var(--secondary-text); font-weight: 600; transition: 0.3s;
+    }
+    
+    nav ul li a:hover { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
+
+    /* --- HERO --- */
     header {
-      text-align: center;
-      padding: 50px 20px;
-      background: linear-gradient(135deg, #003366, #2ecc71);
-      color: #fff;
+        text-align: center;
+        padding: 50px 20px 20px;
     }
-    header h2 { font-size: 2.2rem; margin-bottom: 15px; font-weight: 700; }
-    header p { font-size: 1rem; max-width: 700px; margin: auto; }
+    header h2 {
+        font-size: 2.5rem; margin-bottom: 10px; font-weight: 800;
+        background: linear-gradient(to right, #fff, #94a3b8);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    header p { color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; }
 
-    /* Form Container - wider, two-column */
+    /* --- FORM CONTAINER --- */
     .container {
-      max-width: 900px;
-      margin: 40px auto;
-      background: #fff;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+        max-width: 900px;
+        margin: 40px auto;
+        background: var(--glass);
+        backdrop-filter: blur(12px);
+        padding: 40px;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.3);
     }
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
+
     .container h3 {
-      text-align: center;
-      margin-bottom: 20px;
-      color: #003366;
+        text-align: center; margin-bottom: 30px;
+        color: var(--primary-text); font-size: 1.8rem; font-weight: 700;
     }
 
+    .form-grid {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 25px;
+    }
+
+    /* Input Styles */
     label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 500;
-      color: #005f8e;
+        display: block; margin-bottom: 8px;
+        font-weight: 600; font-size: 0.9rem;
+        color: var(--secondary-text);
     }
+    
     input, select {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 15px;
-      transition: border-color 0.3s ease;
-      background: #fff;
+        width: 100%;
+        padding: 14px;
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--primary-text);
+        font-size: 1rem;
+        transition: 0.3s;
+        font-family: 'Outfit', sans-serif;
     }
+    
     input:focus, select:focus {
-      border-color: #2ecc71;
-      outline: none;
-      box-shadow: 0 0 6px rgba(46,204,113,0.4);
+        border-color: var(--accent);
+        outline: none;
+        box-shadow: 0 0 15px var(--accent-glow);
+        background: rgba(15, 23, 42, 0.9);
     }
 
+    /* Placeholder color fix */
+    ::placeholder { color: #64748b; }
+
+    /* Layout Helpers */
     .span-2 { grid-column: span 2; }
 
+    /* Button */
     .button-wrapper {
-      grid-column: span 2;
-      text-align: center;
-      margin-top: 10px;
+        grid-column: span 2;
+        text-align: center;
+        margin-top: 20px;
     }
+    
     button {
-      width: 40%;
-      min-width: 240px;
-      padding: 12px;
-      background: linear-gradient(90deg, #003366, #2ecc71);
-      color: white;
-      border: none;
-      border-radius: 30px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform 0.2s ease, opacity 0.3s ease;
+        width: 50%; min-width: 250px;
+        padding: 15px;
+        background: var(--gradient);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-size: 1rem; font-weight: 700;
+        cursor: pointer;
+        transition: 0.3s;
+        text-transform: uppercase; letter-spacing: 1px;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
     }
-    button:hover { opacity: 0.9; transform: translateY(-2px); }
+    
+    button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0 25px var(--accent-glow);
+    }
 
+    /* Links */
     .login-link {
-      grid-column: span 2;
-      text-align: center;
-      margin-top: 10px;
-      font-size: 14px;
+        grid-column: span 2; text-align: center; margin-top: 15px; font-size: 0.95rem;
     }
-    .login-link a { color: #2ecc71; text-decoration: none; }
-    .login-link a:hover { text-decoration: underline; color: #003366; }
+    .login-link a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .login-link a:hover { color: white; text-shadow: 0 0 10px var(--accent-glow); }
 
-    footer {
-      text-align: center;
-      padding: 25px;
-      font-size: 0.9rem;
-      color: #777;
-      background: #f0f0f0;
-      border-top: 1px solid #ddd;
-      margin-top: 40px;
-    }
-
-    /* Server-side messages (optional) */
-    .messages { grid-column: span 2; }
-    .error-message {
-      color: #b00020;
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
-    .success-message {
-      color: #14532d;
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
-
-    /* Inline JS error text (no box) */
+    /* Messages & Errors */
+    .messages { grid-column: span 2; text-align: center; }
+    .error-message { color: var(--danger); font-weight: 600; margin-bottom: 10px; }
+    .success-message { color: var(--success); font-weight: 600; margin-bottom: 10px; }
+    
     #jsError {
-  grid-column: span 2;   /* spans both columns */
-  text-align: center;    /* centers text horizontally */
-  margin-bottom: 10px;
-  font-weight: normal;   /* remove bold */
-  color: #b00020;        /* red text */
-  display: none;
-}
+        grid-column: span 2; text-align: center; margin-bottom: 15px;
+        font-weight: 600; color: var(--danger); display: none;
+        padding: 10px; background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px;
+    }
 
+    #conditionSelectWrapper { margin-top: 15px; }
 
-    /* Conditional health condition select spacing */
-    #conditionSelectWrapper { margin-top: 6px; }
+    /* Footer */
+    footer {
+        text-align: center; padding: 30px;
+        border-top: 1px solid var(--border);
+        color: var(--secondary-text); font-size: 0.9rem;
+        margin-top: 60px;
+        background: rgba(2, 6, 23, 0.5);
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .form-grid { grid-template-columns: 1fr; }
+        .span-2 { grid-column: span 1; }
+        .button-wrapper { grid-column: span 1; }
+        .login-link { grid-column: span 1; }
+        #jsError { grid-column: span 1; }
+        .messages { grid-column: span 1; }
+        nav { flex-direction: column; gap: 15px; }
+        nav ul { flex-wrap: wrap; justify-content: center; }
+    }
   </style>
 
   <script>
     function showError(message) {
       const errorBox = document.getElementById("jsError");
-      errorBox.textContent = message;
+      errorBox.innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + message;
       errorBox.style.display = "block";
+      // Smooth scroll to error
+      errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     function clearError() {
@@ -227,9 +283,8 @@
 </head>
 <body>
 
-  <!-- Navigation -->
   <nav>
-    <h1>BMI System</h1>
+    <h1><i class="fas fa-heartbeat"></i> BMI System</h1>
     <ul>
       <li><a href="{% url 'index' %}">Home</a></li>
       <li><a href="{% url 'about' %}">About</a></li>
@@ -237,49 +292,43 @@
     </ul>
   </nav>
 
-  <!-- Hero -->
   <header>
-    <h2>Register</h2>
-    <p>Create your account to access BMI tracking and personalized health tips.</p>
+    <h2>Create Account</h2>
+    <p>Join us to access AI-powered health tracking</p>
   </header>
 
-  <!-- Form Section -->
   <div class="container">
-    <h3>Create Account</h3>
+    <h3>Register Details</h3>
 
     <form method="POST" class="form-grid" onsubmit="return validateRegisterForm();">
       {% csrf_token %}
 
-      <!-- Server-side messages (optional; keeps your Django messages inline) -->
       <div class="messages span-2">
         {% if messages %}
           {% for message in messages %}
             {% if message.tags == 'success' %}
-              <p class="success-message">{{ message }}</p>
+              <p class="success-message"><i class="fas fa-check-circle"></i> {{ message }}</p>
             {% else %}
-              <p class="error-message">{{ message }}</p>
+              <p class="error-message"><i class="fas fa-times-circle"></i> {{ message }}</p>
             {% endif %}
           {% endfor %}
         {% endif %}
       </div>
 
-      <!-- Inline JS error text (red, no pop-up) -->
       <div id="jsError" class="span-2"></div>
 
-      <!-- Row 1: Username / Email -->
       <div>
         <label for="username">Username</label>
-        <input type="text" name="username" id="username" value="{{ username|default:'' }}">
+        <input type="text" name="username" id="username" placeholder="e.g. JohnDoe" value="{{ username|default:'' }}">
       </div>
       <div>
         <label for="email">Email</label>
-        <input type="email" name="email" id="email" value="{{ email|default:'' }}">
+        <input type="email" name="email" id="email" placeholder="john@gmail.com" value="{{ email|default:'' }}">
       </div>
 
-      <!-- Row 2: Age / Gender -->
       <div>
         <label for="age">Age</label>
-        <input type="number" name="age" id="age" min="15" max="100" value="{{ age|default:'' }}">
+        <input type="number" name="age" id="age" min="15" max="100" placeholder="15-100" value="{{ age|default:'' }}">
       </div>
       <div>
         <label for="gender">Gender</label>
@@ -290,7 +339,6 @@
         </select>
       </div>
 
-      <!-- Row 3: City / Health condition toggle -->
       <div>
         <label for="city">City</label>
         <select name="city" id="city">
@@ -302,14 +350,13 @@
         </select>
       </div>
       <div>
-        <label for="has_condition">Do you have any existing health conditions?</label>
+        <label for="has_condition">Existing health conditions?</label>
         <select name="has_condition" id="has_condition" onchange="toggleConditionSelect()">
           <option value="No" {% if has_condition == "No" or not has_condition %}selected{% endif %}>No</option>
           <option value="Yes" {% if has_condition == "Yes" %}selected{% endif %}>Yes</option>
         </select>
-        <!-- Conditional health condition select -->
         <div id="conditionSelectWrapper" style="display:none;">
-          <label for="condition">Please select your condition</label>
+          <label for="condition" style="color: var(--accent); margin-top: 10px;">Select Condition</label>
           <select name="condition" id="condition">
             <option value="">-- Select Condition --</option>
             <option value="Diabetes" {% if condition == "Diabetes" %}selected{% endif %}>Diabetes</option>
@@ -318,34 +365,29 @@
         </div>
       </div>
 
-      <!-- Row 4: Password / Confirm -->
       <div>
         <label for="password">Password</label>
-        <input type="password" name="password" id="password">
+        <input type="password" name="password" id="password" placeholder="6+ chars, letters & numbers">
       </div>
       <div>
         <label for="confirm_password">Re-enter Password</label>
-        <input type="password" name="confirm_password" id="confirm_password">
+        <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password">
       </div>
 
-      <!-- Submit -->
       <div class="button-wrapper">
-        <button type="submit">Register</button>
+        <button type="submit">Register Now <i class="fas fa-arrow-right" style="margin-left:8px;"></i></button>
       </div>
 
-      <!-- Login link -->
       <div class="login-link">
         <a href="{% url 'login' %}">Already have an account? Login</a>
       </div>
     </form>
   </div>
 
-  <!-- Footer -->
   <footer>
     &copy; 2025 BMI Calculator & Health Instruction System. All rights reserved.
   </footer>
 
-  <!-- Ensure condition toggle reflects persisted selection after server render -->
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       toggleConditionSelect();

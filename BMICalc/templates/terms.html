@@ -1,0 +1,168 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms & Disclaimer - BMI System</title>
+    
+    {% include "fevicon.html" %}
+
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- DARK KINETIC THEME VARIABLES --- */
+        :root {
+            --bg-body: #0f172a;      /* Deep Navy */
+            --bg-card: #1e293b;      /* Card Background */
+            --primary-text: #f8fafc; /* White */
+            --secondary-text: #94a3b8; /* Muted Grey */
+            --accent: #3b82f6;       /* Electric Blue */
+            --accent-glow: rgba(59, 130, 246, 0.5);
+            --danger: #ef4444;       /* Red for disclaimer */
+            --danger-bg: rgba(239, 68, 68, 0.15);
+            --border: rgba(255, 255, 255, 0.08);
+            --glass: rgba(30, 41, 59, 0.7);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--primary-text);
+            line-height: 1.7;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Background Glow Effect */
+        body::before {
+            content: ''; position: fixed; top: -100px; right: -100px;
+            width: 500px; height: 500px; background: var(--accent);
+            filter: blur(150px); opacity: 0.2; z-index: -1;
+        }
+
+        .page-header {
+            padding: 80px 20px 60px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto 50px;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            padding: 50px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        h3 {
+            color: var(--primary-text);
+            font-size: 1.3rem;
+            margin-top: 35px;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        p {
+            color: var(--secondary-text);
+            margin-bottom: 15px;
+        }
+
+        /* --- ALERT BOX STYLING --- */
+        .alert-box {
+            background-color: var(--danger-bg);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-left: 4px solid var(--danger);
+            padding: 20px;
+            color: #fca5a5; /* Light Red Text */
+            margin-bottom: 30px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+        
+        .alert-box i {
+            font-size: 1.2rem;
+            color: var(--danger);
+            margin-top: 2px;
+        }
+
+        /* --- LINK STYLING --- */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 20px;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+            padding: 10px 20px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 50px;
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .back-link:hover {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 0 15px var(--accent-glow);
+            transform: translateX(-5px);
+        }
+        
+        .back-link i { margin-right: 8px; }
+
+        @media (max-width: 768px) {
+            .container { padding: 30px 20px; margin: 0 20px 50px; }
+            h1 { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-header">
+        <h1>Terms of Service</h1>
+    </div>
+
+    <div class="container">
+        <div class="alert-box">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div>
+                <strong style="color: var(--danger); display: block; margin-bottom: 5px;">Medical Disclaimer</strong>
+                The content provided by this BMI System is for informational purposes only. It is not intended to be a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician.
+            </div>
+        </div>
+
+        <h3>1. Acceptance of Terms</h3>
+        <p>By accessing and using this BMI Calculator, you accept and agree to be bound by the terms and provision of this agreement.</p>
+
+        <h3>2. Accuracy of Calculations</h3>
+        <p>While we strive for accuracy, BMI is a general indicator and may not accurately reflect the health of athletes, pregnant women, or the elderly. Decisions based on this data are your own responsibility.</p>
+
+        <h3>3. User Accounts</h3>
+        <p>You are responsible for maintaining the confidentiality of your login credentials. We reserve the right to terminate accounts that violate our community standards.</p>
+
+        <br>
+        <a href="{% url 'index' %}" class="back-link"><i class="fas fa-arrow-left"></i> Return to Home</a>
+    </div>
+
+</body>
+</html>

@@ -5,346 +5,530 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Diet Plan - BMI Calculator</title>
+  
   {% include "fevicon.html" %}
 
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <style>
+    /* --- DARK KINETIC THEME VARIABLES --- */
+    :root {
+        --bg-body: #0f172a;      /* Deep Navy */
+        --bg-card: #1e293b;      /* Card Background */
+        --primary-text: #f8fafc; /* White */
+        --secondary-text: #94a3b8; /* Muted Grey */
+        --accent: #3b82f6;       /* Electric Blue */
+        --accent-glow: rgba(59, 130, 246, 0.5);
+        --gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        --glass: rgba(30, 41, 59, 0.7);
+        --border: rgba(255, 255, 255, 0.08);
+        --success: #10b981;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #003366, #2ecc71);
-      min-height: 100vh;
-      color: #333;
-      margin: 0;
+        font-family: 'Outfit', sans-serif;
+        background-color: var(--bg-body);
+        color: var(--primary-text);
+        line-height: 1.6;
+        min-height: 100vh;
+        overflow-x: hidden;
     }
 
-    /* Slim nav bar */
+    /* Background Glow Effect */
+    body::before {
+        content: ''; position: fixed; top: -100px; right: -100px;
+        width: 600px; height: 600px; background: var(--accent);
+        filter: blur(180px); opacity: 0.15; z-index: -1;
+    }
+
+    /* --- NAVIGATION --- */
     nav {
-      background: linear-gradient(90deg, #003366, #005f8e);
-      color: #fff;
-      padding: 8px 25px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        padding: 15px 40px;
+        display: flex; justify-content: space-between; align-items: center;
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        position: sticky; top: 0; z-index: 1000;
     }
-    nav h1 { font-size: 1.2rem; font-weight: 600; color: #fff; }
-    nav ul { list-style: none; display: flex; gap: 15px; }
+
+    nav h1 {
+        font-size: 1.4rem; font-weight: 800; color: var(--primary-text);
+        letter-spacing: 1px; text-transform: uppercase; margin: 0;
+    }
+    nav h1 i { color: var(--accent); margin-right: 8px; }
+
+    nav ul { list-style: none; display: flex; gap: 25px; align-items: center; }
+    
     nav ul li a {
-      text-decoration: none;
-      color: #fff;
-      font-weight: 500;
-      font-size: 0.95rem;
-      transition: color 0.3s ease;
+        text-decoration: none; color: var(--secondary-text); font-weight: 600; transition: 0.3s; font-size: 0.95rem;
     }
-    nav ul li a:hover { color: #2ecc71; }
+    nav ul li a:hover { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
 
+    /* --- CONTAINER --- */
     .container {
-      max-width: 1100px;
-      margin: 40px auto;
-      background: #fff;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        max-width: 1200px;
+        margin: 40px auto;
+        background: var(--glass);
+        backdrop-filter: blur(12px);
+        padding: 40px;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.3);
     }
+
     h2 {
-      text-align: center;
-      margin-bottom: 20px;
-      color: #003366;
-      font-size: 2rem;
-      font-weight: 700;
+        text-align: center; margin-bottom: 40px; font-size: 2.2rem; font-weight: 800;
+        background: linear-gradient(to right, #fff, #94a3b8);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
-    .schedule-container {
-  margin-top: 40px;
-  text-align: center;
-}
 
-.btn-toggle {
-  padding: 12px 25px;
-  background: linear-gradient(90deg, #003366, #2ecc71);
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.3s ease;
-  margin-bottom: 20px;
-}
-.btn-toggle:hover { opacity: 0.9; transform: translateY(-2px); }
+    .sub-badge {
+        background: rgba(16, 185, 129, 0.1); color: var(--success);
+        font-size: 0.9rem; padding: 5px 12px; border-radius: 20px;
+        vertical-align: middle; border: 1px solid rgba(16, 185, 129, 0.3);
+    }
 
-.schedule-box {
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: max-height 0.6s ease, opacity 0.6s ease;
-  margin: 0 auto;
-  max-width: 600px;
-}
-
-.schedule-box ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.schedule-box li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #fff;
-  margin: 8px 0;
-  padding: 12px 18px;
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  /* hover removed */
-}
-
-.schedule-box li .time {
-  font-weight: 600;
-  color: #003366;
-  font-size: 0.95rem;
-}
-
-.schedule-box li .activity {
-  font-size: 0.9rem;
-  color: #2ecc71;
-  font-style: italic;
-}
-
-    /* 3×2 matrix for 6 items */
+    /* --- DIET GRID --- */
     .diet-container {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
     }
+
     .food-card {
-      background: #f9f9f9;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      text-align: center;
-      padding: 15px;
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px;
+        text-align: center;
+        transition: 0.3s;
+        position: relative;
+        overflow: hidden;
+        display: flex; flex-direction: column;
     }
+
+    .food-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--accent);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
     .food-card img {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
-      border-radius: 8px;
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
-    .food-card h3 { margin: 10px 0; color: #005f8e; }
-    .food-card h3 a { text-decoration: none; color: #005f8e; }
-    .food-card h3 a:hover { color: #2ecc71; }
-    .nutrition { font-size: 14px; text-align: left; margin-top: 10px; color: #333; }
-    .nutrition p { margin: 4px 0; }
+
+    .food-card h3 {
+        margin: 10px 0; font-size: 1.1rem; flex-grow: 1;
+    }
+
+    .food-card h3 a {
+        text-decoration: none; color: var(--accent); font-weight: 700; transition: 0.3s;
+    }
+
+    .food-card h3 a:hover {
+        color: white; text-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    /* Nutrition Data Styling */
+    .nutrition {
+        text-align: left; margin-top: 15px; 
+        background: rgba(255, 255, 255, 0.03);
+        padding: 15px; border-radius: 10px;
+    }
+
+    .nutrition p {
+        margin: 8px 0; font-size: 0.9rem; color: var(--secondary-text);
+        display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 4px;
+    }
+    .nutrition p:last-child { border-bottom: none; }
+
+    .nutrition p span {
+        color: var(--primary-text); font-weight: 600;
+    }
+
+    /* --- SCHEDULE SECTION --- */
+    .schedule-container {
+        margin-top: 60px;
+        text-align: center;
+        position: relative;
+    }
+
+    .btn-toggle {
+        padding: 12px 30px;
+        background: var(--gradient);
+        color: #fff;
+        border: none;
+        border-radius: 50px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.3s;
+        text-transform: uppercase; letter-spacing: 1px;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        margin-bottom: 30px;
+    }
+
+    .btn-toggle:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0 25px var(--accent-glow);
+    }
+
+    .schedule-box {
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: max-height 0.6s ease, opacity 0.6s ease;
+        margin: 0 auto;
+        max-width: 700px;
+    }
+
+    .schedule-box ul {
+        list-style: none; padding: 0; margin: 0;
+    }
+
+    .schedule-box li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(30, 41, 59, 0.4);
+        margin: 10px 0;
+        padding: 15px 25px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        transition: 0.3s;
+    }
+
+    .schedule-box li:hover {
+        border-color: var(--accent);
+        background: rgba(30, 41, 59, 0.8);
+    }
+
+    .schedule-box li .time {
+        font-weight: 700;
+        color: var(--accent);
+        font-size: 1rem;
+    }
+
+    .schedule-box li .activity {
+        font-size: 0.95rem;
+        color: var(--primary-text);
+        font-style: normal;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        nav { flex-direction: column; gap: 15px; }
+        .container { margin: 20px; padding: 20px; }
+        .diet-container { grid-template-columns: 1fr; }
+    }
   </style>
+
+  <script>
+    function toggleSchedule() {
+      const box = document.getElementById("scheduleBox");
+      const btn = document.querySelector(".btn-toggle");
+      if (box.style.maxHeight && box.style.maxHeight !== "0px") {
+        box.style.maxHeight = "0";
+        box.style.opacity = "0";
+        btn.innerHTML = "View Schedule <i class='fas fa-chevron-down' style='margin-left:8px'></i>";
+      } else {
+        box.style.maxHeight = box.scrollHeight + "px";
+        box.style.opacity = "1";
+        btn.innerHTML = "Hide Schedule <i class='fas fa-chevron-up' style='margin-left:8px'></i>";
+      }
+    }
+  </script>
 </head>
-<script>
-function toggleSchedule() {
-  const box = document.getElementById("scheduleBox");
-  const btn = document.querySelector(".btn-toggle");
-  if (box.style.maxHeight && box.style.maxHeight !== "0px") {
-    box.style.maxHeight = "0";
-    box.style.opacity = "0";
-    btn.textContent = "View Schedule";
-  } else {
-    box.style.maxHeight = box.scrollHeight + "px";
-    box.style.opacity = "1";
-    btn.textContent = "Hide Schedule";
-  }
-}
-</script>
 <body>
 
-  <!-- Navigation -->
   <nav>
-    <h1>BMI System</h1>
+    <h1><i class="fas fa-utensils"></i> BMI System</h1>
     <ul>
       <li><a href="{% url 'user' %}">User Home</a></li>
       <li><a href="{% url 'track_progress' %}">Track Progress</a></li>
       <li><a href="{% url 'workout_plan' status %}">View Workout</a></li>
-      <li><a href="{% url 'logout' %}">Logout</a></li>
+      <li><a href="{% url 'logout' %}" style="color: #ef4444;">Logout</a></li>
     </ul>
   </nav>
 
-  <!-- Diet Plan -->
   <div class="container">
-    <h2>Diet Plan for {{ status }} (Diabetes)</h2>
+    <h2>Diet Plan for <span style="color: var(--accent);">{{ status }}</span> <span class="sub-badge">Diabetes</span></h2>
 
     <div class="diet-container">
-  {% if status == "Underweight" %}
-    <!-- Underweight (India-based, diabetes-friendly; 1 non-veg item) -->
-    <div class="food-card">
-      <img src="{% static 'images/ragi_kanji.jpg' %}" alt="Ragi Kanji">
-      <h3><a href="https://www.google.com/search?q=Ragi+Kanji" target="_blank">Ragi Kanji (Finger Millet Porridge)</a></h3>
-      <div class="nutrition"><p>Protein: 6 g</p><p>Calories: 220 kcal</p><p>Quantity: 1 bowl / 250 ml</p></div>
-    </div>
-    <div class="food-card">
-      <img src="{% static 'images/paneer_bhurji.jpg' %}" alt="Paneer Bhurji + Bajra Roti">
-      <h3><a href="https://www.google.com/search?q=Paneer+Bhurji+Bajra+Roti" target="_blank">Paneer Bhurji + Bajra Roti</a></h3>
-      <div class="nutrition"><p>Protein: 20 g</p><p>Calories: 350 kcal</p><p>Quantity: 1 roti / 50 g + bhurji / 150 g</p></div>
-    </div>
-    <div class="food-card">
-      <img src="{% static 'images/sprouted_moong_salad.jpg' %}" alt="Sprouted Moong Salad">
-      <h3><a href="https://www.google.com/search?q=Sprouted+Moong+Salad" target="_blank">Sprouted Moong Salad</a></h3>
-      <div class="nutrition"><p>Protein: 12 g</p><p>Calories: 220 kcal</p><p>Quantity: 1 bowl / 200 g</p></div>
-    </div>
-    <div class="food-card">
-      <img src="{% static 'images/egg_curry.jpg' %}" alt="Egg Curry">
-      <h3><a href="https://www.google.com/search?q=Egg+Curry+healthy" target="_blank">Egg Curry (light masala)</a></h3>
-      <div class="nutrition"><p>Protein: 12 g</p><p>Calories: 190 kcal</p><p>Quantity: 2 eggs / 100 g</p></div>
-    </div>
-    <div class="food-card">
-      <img src="{% static 'images/vegetable_dalia.jpg' %}" alt="Vegetable Dalia">
-      <h3><a href="https://www.google.com/search?q=Vegetable+Dalia" target="_blank">Vegetable Dalia (Broken Wheat Khichdi)</a></h3>
-      <div class="nutrition"><p>Protein: 8 g</p><p>Calories: 240 kcal</p><p>Quantity: 1 bowl / 250 g</p></div>
-    </div>
-    <div class="food-card">
-      <img src="{% static 'images/soybean_curry.jpg' %}" alt="Soybean Curry">
-      <h3><a href="https://www.google.com/search?q=Soybean+Curry" target="_blank">Soybean Curry</a></h3>
-      <div class="nutrition"><p>Protein: 15 g</p><p>Calories: 260 kcal</p><p>Quantity: 1 bowl / 200 g</p></div>
-    </div>
-
-  {% elif status == "Normal" %}
-    <!-- Normal (India-based, diabetes-friendly; 1 non-veg item) -->
-    <div class="food-card">
-      <img src="{% static 'images/bajra_khichdi.jpg' %}" alt="Bajra Khichdi">
-      <h3><a href="https://www.google.com/search?q=Bajra+Khichdi+with+Vegetables" target="_blank">Bajra Khichdi with Vegetables</a></h3>
-      <div class="nutrition"><p>Protein: 10 g</p><p>Calories: 260 kcal</p><p>Quantity: 1 plate / 250 g</p></div>
-    </div>
-    <div class="food-card">
-      <img src="{% static 'images/palak_dal.jpg' %}" alt="Palak Dal">
-      <h3><a href="https://www.google.com/search?q=Palak+Dal" target="_blank">Palak Dal (Spinach + Arhar Dal)</a></h3>
-      <div class="nutrition"><p>Protein: 14 g</p><p>Calories: 230 kcal</p><p>Quantity: 1 bowl / 220 g</p></div>
-    </div>
-    <div class="food-card">
-      <img src="{% static 'images/fish_tikka.jpg' %}" alt="Grilled Fish Tikka">
-      <h3><a href="https://www.google.com/search?q=Grilled+Fish+Tikka" target="_blank">Grilled Fish Tikka (light spice)</a></h3>
-      <div class="nutrition"><p>Protein: 26 g</p><p>Calories: 220 kcal</p><p>Quantity: 1 portion / 120 g</p></div>
-    </div>
-    <div class="food-card">
-      <img src="{% static 'images/cucumber_tomato_raita.jpg' %}" alt="Cucumber Tomato Raita">
-      <h3><a href="https://www.google.com/search?q=Cucumber+Tomato+Raita" target="_blank">Cucumber + Tomato Raita (low-fat curd)</a></h3>
-      <div class="nutrition"><p>Protein: 6 g</p><p>Calories: 120 kcal</p><p>Quantity: 1 bowl / 200 ml</p></div>
-    </div>
-    <div class="food-card">
-      <img src="{% static 'images/masoor_dal_soup.jpg' %}" alt="Masoor Dal Soup">
-      <h3><a href="https://www.google.com/search?q=Masoor+Dal+Soup" target="_blank">Masoor Dal Soup</a></h3>
-      <div class="nutrition"><p>Protein: 12 g</p><p>Calories: 180 kcal</p><p>Quantity: 1 bowl / 250 ml</p></div>
-    </div>
-    <div class="food-card">
-      <img src="{% static 'images/vegetable_handvo.jpg' %}" alt="Vegetable Handvo">
-      <h3><a href="https://www.google.com/search?q=Vegetable+Handvo" target="_blank">Vegetable Handvo (lentil cake)</a></h3>
-      <div class="nutrition"><p>Protein: 10 g</p><p>Calories: 240 kcal</p><p>Quantity: 2 pieces / 180 g</p></div>
-    </div>
-
-  {% elif status == "Overweight" %}
-    <!-- Overweight (India-based, diabetes-friendly; all vegetarian) -->
-    <div class="food-card">
-      <img src="{% static 'images/karela_sabzi.jpg' %}" alt="Karela Sabzi">
-      <h3><a href="https://www.google.com/search?q=Karela+Sabzi" target="_blank">Karela (Bitter Gourd) Sabzi</a></h3>
-      <div class="nutrition"><p>Protein: 3 g</p><p>Calories: 120 kcal</p><p>Quantity: 1 plate / 200 g</p></div>
-    </div>
-    <div class="food-card">
-      <img src="{% static 'images/lauki_soup.jpg' %}" alt="Lauki Soup">
-      <h3><a href="https://www.google.com/search?q=Lauki+Soup" target="_blank">Lauki (Bottle Gourd) Soup</a></h3>
-      <div class="nutrition"><p>Protein: 3 g</p><p>Calories: 90 kcal</p><p>Quantity: 1 bowl / 250 ml</p></div>
-    </div>
-    <div class="food-card">
-      <img src="{% static 'images/sprouted_chana_sundal.jpg' %}" alt="Sprouted Chana Sundal">
-      <h3><a href="https://www.google.com/search?q=Sprouted+Chana+Sundal" target="_blank">Sprouted Chana Sundal</a></h3>
-      <div class="nutrition"><p>Protein: 12 g</p><p>Calories: 210 kcal</p><p>Quantity: 1 bowl / 200 g</p></div>
-    </div>
-    <div class="food-card">
-      <img src="{% static 'images/methi_thepla.jpg' %}" alt="Methi Thepla">
-      <h3><a href="https://www.google.com/search?q=Methi+Thepla+whole+wheat" target="_blank">Methi Thepla (whole wheat + fenugreek)</a></h3>
-      <div class="nutrition"><p>Protein: 7 g</p><p>Calories: 220 kcal</p><p>Quantity: 2 thepla / 120 g</p></div>
-    </div>
-    <div class="food-card">
-      <img src="{% static 'images/ragi_idli.jpg' %}" alt="Ragi Idli">
-      <h3><a href="https://www.google.com/search?q=Ragi+Idli" target="_blank">Vegetable Ragi Idli</a></h3>
-      <div class="nutrition"><p>Protein: 8 g</p><p>Calories: 200 kcal</p><p>Quantity: 3 idli / 150 g</p></div>
-    </div>
-    <div class="food-card">
-      <img src="{% static 'images/palak_mushroom_stirfry.jpg' %}" alt="Palak Mushroom Stir Fry">
-      <h3><a href="https://www.google.com/search?q=Spinach+Mushroom+Stir+Fry" target="_blank">Palak + Mushroom Stir Fry</a></h3>
-      <div class="nutrition"><p>Protein: 9 g</p><p>Calories: 170 kcal</p><p>Quantity: 1 plate / 200 g</p></div>
-    </div>
-
-  {% elif status == "Obese" %}
-    <!-- Obese (India-based, diabetes-friendly; 1 non-veg item) -->
-    <div class="food-card">
-      <img src="{% static 'images/steamed_mix_veg.jpg' %}" alt="Steamed Mixed Vegetables">
-      <h3><a href="https://www.google.com/search?q=Steamed+Mixed+Vegetables+Indian" target="_blank">Steamed Mixed Vegetables</a></h3>
-      <div class="nutrition"><p>Protein: 5 g</p><p>Calories: 140 kcal</p><p>Quantity: 1 bowl / 200 g</p></div>
-    </div>
-    <div class="food-card">
-      <img src="{% static 'images/tomato_rasam.jpg' %}" alt="Clear Tomato Rasam">
-      <h3><a href="https://www.google.com/search?q=Tomato+Rasam+healthy" target="_blank">Clear Tomato Rasam (light)</a></h3>
-      <div class="nutrition"><p>Protein: 3 g</p><p>Calories: 90 kcal</p><p>Quantity: 1 bowl / 250 ml</p></div>
-    </div>
-    <div class="food-card">
-      <img src="{% static 'images/baked_fish.jpg' %}" alt="Baked Fish">
-      <h3><a href="https://www.google.com/search?q=Baked+Fish+Indian+style" target="_blank">Baked Fish (minimal oil)</a></h3>
-      <div class="nutrition"><p>Protein: 26 g</p><p>Calories: 220 kcal</p><p>Quantity: 1 fillet / 120 g</p></div>
-    </div>
-    <div class="food-card">
-      <img src="{% static 'images/kulthi_sprouts_salad.jpg' %}" alt="Sprouted Horse Gram Salad">
-      <h3><a href="https://www.google.com/search?q=Horse+Gram+Sprouts+Salad" target="_blank">Sprouted Horse Gram (Kulthi) Salad</a></h3>
-      <div class="nutrition"><p>Protein: 14 g</p><p>Calories: 210 kcal</p><p>Quantity: 1 bowl / 200 g</p></div>
-    </div>
-    <div class="food-card">
-      <img src="{% static 'images/oats_cheela.jpg' %}" alt="Vegetable Oats Cheela">
-      <h3><a href="https://www.google.com/search?q=Oats+Cheela+vegetables" target="_blank">Vegetable Oats Cheela</a></h3>
-      <div class="nutrition"><p>Protein: 9 g</p><p>Calories: 200 kcal</p><p>Quantity: 2 cheela / 160 g</p></div>
-    </div>
-    <div class="food-card">
-      <img src="{% static 'images/palak_soup.jpg' %}" alt="Palak Soup">
-      <h3><a href="https://www.google.com/search?q=Palak+Soup" target="_blank">Palak (Spinach) Soup</a></h3>
-      <div class="nutrition"><p>Protein: 4 g</p><p>Calories: 120 kcal</p><p>Quantity: 1 bowl / 250 ml</p></div>
-    </div>
-  {% endif %}
-   </div>
-  <div class="schedule-container">
-  <!-- Centered Toggle Button -->
-  <button class="btn-toggle" onclick="toggleSchedule()">View Schedule</button>
-
-  <!-- Hidden Schedule Section -->
-  <div id="scheduleBox" class="schedule-box">
     {% if status == "Underweight" %}
-      <ul>
-        <li><span class="time">7:00 AM</span><span class="activity">Heavy breakfast</span></li>
-        <li><span class="time">10:00 AM</span><span class="activity">Mid‑morning snack</span></li>
-        <li><span class="time">1:00 PM</span><span class="activity">Balanced lunch</span></li>
-        <li><span class="time">4:00 PM</span><span class="activity">Energy snack</span></li>
-        <li><span class="time">7:00 PM</span><span class="activity">Strength workout</span></li>
-        <li><span class="time">8:00 PM</span><span class="activity">Light dinner</span></li>
-        <li><span class="time">10:00 PM</span><span class="activity">Bedtime snack</span></li>
-      </ul>
+        <div class="food-card">
+        <img src="{% static 'images/ragi_kanji.jpg' %}" alt="Ragi Kanji">
+        <h3><a href="https://www.google.com/search?q=Ragi+Kanji" target="_blank">Ragi Kanji</a></h3>
+        <div class="nutrition">
+            <p>Protein: <span>6 g</span></p>
+            <p>Calories: <span>220 kcal</span></p>
+            <p>Quantity: <span>1 bowl / 250 ml</span></p>
+        </div>
+        </div>
+        <div class="food-card">
+        <img src="{% static 'images/paneer_bhurji.jpg' %}" alt="Paneer Bhurji + Bajra Roti">
+        <h3><a href="https://www.google.com/search?q=Paneer+Bhurji+Bajra+Roti" target="_blank">Paneer Bhurji + Roti</a></h3>
+        <div class="nutrition">
+            <p>Protein: <span>20 g</span></p>
+            <p>Calories: <span>350 kcal</span></p>
+            <p>Quantity: <span>1 roti / 50g + 150g</span></p>
+        </div>
+        </div>
+        <div class="food-card">
+        <img src="{% static 'images/sprouted_moong_salad.jpg' %}" alt="Sprouted Moong Salad">
+        <h3><a href="https://www.google.com/search?q=Sprouted+Moong+Salad" target="_blank">Sprouted Moong Salad</a></h3>
+        <div class="nutrition">
+            <p>Protein: <span>12 g</span></p>
+            <p>Calories: <span>220 kcal</span></p>
+            <p>Quantity: <span>1 bowl / 200 g</span></p>
+        </div>
+        </div>
+        <div class="food-card">
+        <img src="{% static 'images/egg_curry.jpg' %}" alt="Egg Curry">
+        <h3><a href="https://www.google.com/search?q=Egg+Curry+healthy" target="_blank">Egg Curry (Light)</a></h3>
+        <div class="nutrition">
+            <p>Protein: <span>12 g</span></p>
+            <p>Calories: <span>190 kcal</span></p>
+            <p>Quantity: <span>2 eggs / 100 g</span></p>
+        </div>
+        </div>
+        <div class="food-card">
+        <img src="{% static 'images/vegetable_dalia.jpg' %}" alt="Vegetable Dalia">
+        <h3><a href="https://www.google.com/search?q=Vegetable+Dalia" target="_blank">Vegetable Dalia</a></h3>
+        <div class="nutrition">
+            <p>Protein: <span>8 g</span></p>
+            <p>Calories: <span>240 kcal</span></p>
+            <p>Quantity: <span>1 bowl / 250 g</span></p>
+        </div>
+        </div>
+        <div class="food-card">
+        <img src="{% static 'images/soybean_curry.jpg' %}" alt="Soybean Curry">
+        <h3><a href="https://www.google.com/search?q=Soybean+Curry" target="_blank">Soybean Curry</a></h3>
+        <div class="nutrition">
+            <p>Protein: <span>15 g</span></p>
+            <p>Calories: <span>260 kcal</span></p>
+            <p>Quantity: <span>1 bowl / 200 g</span></p>
+        </div>
+        </div>
+
     {% elif status == "Normal" %}
-      <ul>
-        <li><span class="time">7:30 AM</span><span class="activity">Moderate breakfast</span></li>
-        <li><span class="time">12:30 PM</span><span class="activity">Balanced lunch</span></li>
-        <li><span class="time">4:00 PM</span><span class="activity">Light snack</span></li>
-        <li><span class="time">6:30 PM</span><span class="activity">Evening workout</span></li>
-        <li><span class="time">8:00 PM</span><span class="activity">Light dinner</span></li>
-      </ul>
+        <div class="food-card">
+        <img src="{% static 'images/bajra_khichdi.jpg' %}" alt="Bajra Khichdi">
+        <h3><a href="https://www.google.com/search?q=Bajra+Khichdi+with+Vegetables" target="_blank">Bajra Khichdi</a></h3>
+        <div class="nutrition">
+            <p>Protein: <span>10 g</span></p>
+            <p>Calories: <span>260 kcal</span></p>
+            <p>Quantity: <span>1 plate / 250 g</span></p>
+        </div>
+        </div>
+        <div class="food-card">
+        <img src="{% static 'images/palak_dal.jpg' %}" alt="Palak Dal">
+        <h3><a href="https://www.google.com/search?q=Palak+Dal" target="_blank">Palak Dal</a></h3>
+        <div class="nutrition">
+            <p>Protein: <span>14 g</span></p>
+            <p>Calories: <span>230 kcal</span></p>
+            <p>Quantity: <span>1 bowl / 220 g</span></p>
+        </div>
+        </div>
+        <div class="food-card">
+        <img src="{% static 'images/fish_tikka.jpg' %}" alt="Grilled Fish Tikka">
+        <h3><a href="https://www.google.com/search?q=Grilled+Fish+Tikka" target="_blank">Grilled Fish Tikka</a></h3>
+        <div class="nutrition">
+            <p>Protein: <span>26 g</span></p>
+            <p>Calories: <span>220 kcal</span></p>
+            <p>Quantity: <span>1 portion / 120 g</span></p>
+        </div>
+        </div>
+        <div class="food-card">
+        <img src="{% static 'images/cucumber_tomato_raita.jpg' %}" alt="Cucumber Tomato Raita">
+        <h3><a href="https://www.google.com/search?q=Cucumber+Tomato+Raita" target="_blank">Cucumber Raita</a></h3>
+        <div class="nutrition">
+            <p>Protein: <span>6 g</span></p>
+            <p>Calories: <span>120 kcal</span></p>
+            <p>Quantity: <span>1 bowl / 200 ml</span></p>
+        </div>
+        </div>
+        <div class="food-card">
+        <img src="{% static 'images/masoor_dal_soup.jpg' %}" alt="Masoor Dal Soup">
+        <h3><a href="https://www.google.com/search?q=Masoor+Dal+Soup" target="_blank">Masoor Dal Soup</a></h3>
+        <div class="nutrition">
+            <p>Protein: <span>12 g</span></p>
+            <p>Calories: <span>180 kcal</span></p>
+            <p>Quantity: <span>1 bowl / 250 ml</span></p>
+        </div>
+        </div>
+        <div class="food-card">
+        <img src="{% static 'images/vegetable_handvo.jpg' %}" alt="Vegetable Handvo">
+        <h3><a href="https://www.google.com/search?q=Vegetable+Handvo" target="_blank">Vegetable Handvo</a></h3>
+        <div class="nutrition">
+            <p>Protein: <span>10 g</span></p>
+            <p>Calories: <span>240 kcal</span></p>
+            <p>Quantity: <span>2 pieces / 180 g</span></p>
+        </div>
+        </div>
+
     {% elif status == "Overweight" %}
-      <ul>
-        <li><span class="time">7:30 AM</span><span class="activity">Light breakfast</span></li>
-        <li><span class="time">12:00 PM</span><span class="activity">Controlled lunch</span></li>
-        <li><span class="time">3:30 PM</span><span class="activity">Healthy snack</span></li>
-        <li><span class="time">6:30 PM</span><span class="activity">Cardio workout</span></li>
-        <li><span class="time">8:00 PM</span><span class="activity">Very light dinner</span></li>
-      </ul>
+        <div class="food-card">
+        <img src="{% static 'images/karela_sabzi.jpg' %}" alt="Karela Sabzi">
+        <h3><a href="https://www.google.com/search?q=Karela+Sabzi" target="_blank">Karela Sabzi</a></h3>
+        <div class="nutrition">
+            <p>Protein: <span>3 g</span></p>
+            <p>Calories: <span>120 kcal</span></p>
+            <p>Quantity: <span>1 plate / 200 g</span></p>
+        </div>
+        </div>
+        <div class="food-card">
+        <img src="{% static 'images/lauki_soup.jpg' %}" alt="Lauki Soup">
+        <h3><a href="https://www.google.com/search?q=Lauki+Soup" target="_blank">Lauki Soup</a></h3>
+        <div class="nutrition">
+            <p>Protein: <span>3 g</span></p>
+            <p>Calories: <span>90 kcal</span></p>
+            <p>Quantity: <span>1 bowl / 250 ml</span></p>
+        </div>
+        </div>
+        <div class="food-card">
+        <img src="{% static 'images/sprouted_chana_sundal.jpg' %}" alt="Sprouted Chana Sundal">
+        <h3><a href="https://www.google.com/search?q=Sprouted+Chana+Sundal" target="_blank">Sprouted Sundal</a></h3>
+        <div class="nutrition">
+            <p>Protein: <span>12 g</span></p>
+            <p>Calories: <span>210 kcal</span></p>
+            <p>Quantity: <span>1 bowl / 200 g</span></p>
+        </div>
+        </div>
+        <div class="food-card">
+        <img src="{% static 'images/methi_thepla.jpg' %}" alt="Methi Thepla">
+        <h3><a href="https://www.google.com/search?q=Methi+Thepla+whole+wheat" target="_blank">Methi Thepla</a></h3>
+        <div class="nutrition">
+            <p>Protein: <span>7 g</span></p>
+            <p>Calories: <span>220 kcal</span></p>
+            <p>Quantity: <span>2 thepla / 120 g</span></p>
+        </div>
+        </div>
+        <div class="food-card">
+        <img src="{% static 'images/ragi_idli.jpg' %}" alt="Ragi Idli">
+        <h3><a href="https://www.google.com/search?q=Ragi+Idli" target="_blank">Vegetable Ragi Idli</a></h3>
+        <div class="nutrition">
+            <p>Protein: <span>8 g</span></p>
+            <p>Calories: <span>200 kcal</span></p>
+            <p>Quantity: <span>3 idli / 150 g</span></p>
+        </div>
+        </div>
+        <div class="food-card">
+        <img src="{% static 'images/palak_mushroom_stirfry.jpg' %}" alt="Palak Mushroom Stir Fry">
+        <h3><a href="https://www.google.com/search?q=Spinach+Mushroom+Stir+Fry" target="_blank">Palak + Mushroom</a></h3>
+        <div class="nutrition">
+            <p>Protein: <span>9 g</span></p>
+            <p>Calories: <span>170 kcal</span></p>
+            <p>Quantity: <span>1 plate / 200 g</span></p>
+        </div>
+        </div>
+
     {% elif status == "Obese" %}
-      <ul>
-        <li><span class="time">8:00 AM</span><span class="activity">Very light breakfast</span></li>
-        <li><span class="time">1:00 PM</span><span class="activity">Small lunch</span></li>
-        <li><span class="time">5:00 PM</span><span class="activity">Light snack</span></li>
-        <li><span class="time">7:00 PM</span><span class="activity">Gentle workout</span></li>
-        <li><span class="time">8:00 PM</span><span class="activity">Soup‑style dinner</span></li>
-      </ul>
+        <div class="food-card">
+        <img src="{% static 'images/steamed_mix_veg.jpg' %}" alt="Steamed Mixed Vegetables">
+        <h3><a href="https://www.google.com/search?q=Steamed+Mixed+Vegetables+Indian" target="_blank">Steamed Veggies</a></h3>
+        <div class="nutrition">
+            <p>Protein: <span>5 g</span></p>
+            <p>Calories: <span>140 kcal</span></p>
+            <p>Quantity: <span>1 bowl / 200 g</span></p>
+        </div>
+        </div>
+        <div class="food-card">
+        <img src="{% static 'images/tomato_rasam.jpg' %}" alt="Clear Tomato Rasam">
+        <h3><a href="https://www.google.com/search?q=Tomato+Rasam+healthy" target="_blank">Clear Tomato Rasam</a></h3>
+        <div class="nutrition">
+            <p>Protein: <span>3 g</span></p>
+            <p>Calories: <span>90 kcal</span></p>
+            <p>Quantity: <span>1 bowl / 250 ml</span></p>
+        </div>
+        </div>
+        <div class="food-card">
+        <img src="{% static 'images/baked_fish.jpg' %}" alt="Baked Fish">
+        <h3><a href="https://www.google.com/search?q=Baked+Fish+Indian+style" target="_blank">Baked Fish</a></h3>
+        <div class="nutrition">
+            <p>Protein: <span>26 g</span></p>
+            <p>Calories: <span>220 kcal</span></p>
+            <p>Quantity: <span>1 fillet / 120 g</span></p>
+        </div>
+        </div>
+        <div class="food-card">
+        <img src="{% static 'images/kulthi_sprouts_salad.jpg' %}" alt="Sprouted Horse Gram Salad">
+        <h3><a href="https://www.google.com/search?q=Horse+Gram+Sprouts+Salad" target="_blank">Kulthi Sprouts</a></h3>
+        <div class="nutrition">
+            <p>Protein: <span>14 g</span></p>
+            <p>Calories: <span>210 kcal</span></p>
+            <p>Quantity: <span>1 bowl / 200 g</span></p>
+        </div>
+        </div>
+        <div class="food-card">
+        <img src="{% static 'images/oats_cheela.jpg' %}" alt="Vegetable Oats Cheela">
+        <h3><a href="https://www.google.com/search?q=Oats+Cheela+vegetables" target="_blank">Veg Oats Cheela</a></h3>
+        <div class="nutrition">
+            <p>Protein: <span>9 g</span></p>
+            <p>Calories: <span>200 kcal</span></p>
+            <p>Quantity: <span>2 cheela / 160 g</span></p>
+        </div>
+        </div>
+        <div class="food-card">
+        <img src="{% static 'images/palak_soup.jpg' %}" alt="Palak Soup">
+        <h3><a href="https://www.google.com/search?q=Palak+Soup" target="_blank">Palak Soup</a></h3>
+        <div class="nutrition">
+            <p>Protein: <span>4 g</span></p>
+            <p>Calories: <span>120 kcal</span></p>
+            <p>Quantity: <span>1 bowl / 250 ml</span></p>
+        </div>
+        </div>
     {% endif %}
-  </div>
-</div>
+    </div>
+
+    <div class="schedule-container">
+      <button class="btn-toggle" onclick="toggleSchedule()">View Schedule <i class="fas fa-chevron-down" style="margin-left:8px"></i></button>
+
+      <div id="scheduleBox" class="schedule-box">
+        {% if status == "Underweight" %}
+          <ul>
+            <li><span class="time"><i class="far fa-clock"></i> 7:00 AM</span><span class="activity">Heavy breakfast</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 10:00 AM</span><span class="activity">Mid‑morning snack</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 1:00 PM</span><span class="activity">Balanced lunch</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 4:00 PM</span><span class="activity">Energy snack</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 7:00 PM</span><span class="activity">Strength workout</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 8:00 PM</span><span class="activity">Light dinner</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 10:00 PM</span><span class="activity">Bedtime snack</span></li>
+          </ul>
+        {% elif status == "Normal" %}
+          <ul>
+            <li><span class="time"><i class="far fa-clock"></i> 7:30 AM</span><span class="activity">Moderate breakfast</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 12:30 PM</span><span class="activity">Balanced lunch</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 4:00 PM</span><span class="activity">Light snack</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 6:30 PM</span><span class="activity">Evening workout</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 8:00 PM</span><span class="activity">Light dinner</span></li>
+          </ul>
+        {% elif status == "Overweight" %}
+          <ul>
+            <li><span class="time"><i class="far fa-clock"></i> 7:30 AM</span><span class="activity">Light breakfast</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 12:00 PM</span><span class="activity">Controlled lunch</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 3:30 PM</span><span class="activity">Healthy snack</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 6:30 PM</span><span class="activity">Cardio workout</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 8:00 PM</span><span class="activity">Very light dinner</span></li>
+          </ul>
+        {% elif status == "Obese" %}
+          <ul>
+            <li><span class="time"><i class="far fa-clock"></i> 8:00 AM</span><span class="activity">Very light breakfast</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 1:00 PM</span><span class="activity">Small lunch</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 5:00 PM</span><span class="activity">Light snack</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 7:00 PM</span><span class="activity">Gentle workout</span></li>
+            <li><span class="time"><i class="far fa-clock"></i> 8:00 PM</span><span class="activity">Soup‑style dinner</span></li>
+          </ul>
+        {% endif %}
+      </div>
+    </div>
   </div>
 
 </body>

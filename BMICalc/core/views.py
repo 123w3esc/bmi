@@ -436,3 +436,272 @@ def specialist_bot(request):
     }
     return render(request, "bot.html", context)
 
+
+# ---------------- DOWNLOAD PDF REPORT ----------------
+
+
+# views.py (Update imports if needed)
+# views.py
+import io
+from django.shortcuts import render, redirect
+from django.http import FileResponse
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from .models import User, BMIRecord, Specialist
+
+def download_report(request):
+    # 1. Check Login
+    if 'user_id' not in request.session:
+        return redirect('login')
+
+    # 2. Setup PDF
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter, topMargin=30, bottomMargin=30)
+    styles = getSampleStyleSheet()
+    elements = []
+
+    # --- Custom Styles (Compact for single page feel) ---
+    style_header = ParagraphStyle('Header', parent=styles['Heading1'], fontSize=16, alignment=1, spaceAfter=10, textColor=colors.navy)
+    style_sub = ParagraphStyle('Sub', parent=styles['Heading3'], fontSize=12, spaceBefore=10, spaceAfter=5, textColor=colors.darkgreen)
+    style_cell_head = ParagraphStyle('CellHead', parent=styles['BodyText'], fontSize=9, fontName='Helvetica-Bold', textColor=colors.white)
+    style_cell = ParagraphStyle('Cell', parent=styles['BodyText'], fontSize=9, leading=10)
+
+    # 3. Fetch Data
+    user = User.objects.get(id=request.session['user_id'])
+    last_record = BMIRecord.objects.filter(user=user).order_by('-created_at').first()
+
+    if not last_record:
+        return redirect('calculate_bmi')
+
+    status = last_record.status
+    condition = user.condition if user.has_condition else "None"
+    city = user.city
+
+    # ==========================================
+    # 4. DATA LOGIC (All in one place)
+    # ==========================================
+
+    diet_data = []
+    workout_data = []
+    schedule_data = []
+    specialist_query = condition if condition != "None" else status
+
+    # --- A. DIABETES LOGIC ---
+    if condition == "Diabetes":
+        # Diet
+        diet_data = [
+            ["Multigrain Paratha", "Protein: 12g | 320 kcal", "2 Parathas"],
+            ["Almond Milk (Sugar Free)", "Protein: 8g | 250 kcal", "1 Glass"],
+            ["Chicken Stew / Soya", "Protein: 25g | 300 kcal", "1 Bowl"],
+            ["Bitter Gourd (Karela)", "Cal: 120 kcal", "1 Bowl"],
+            ["Brown Rice Khichdi", "Protein: 10g | 300 kcal", "1 Plate"],
+        ]
+        # Workout (Low Impact)
+        workout_data = [
+            ["Brisk Walking", "30 Mins", "Daily Sugar Control"],
+            ["Light Weights", "3 Sets x 12 Reps", "Muscle uptake"],
+            ["Yoga (Pranayama)", "15 Mins", "Stress Reduction"],
+        ]
+        # Schedule
+        schedule_data = [
+            ["07:00 AM", "Methi Water"], ["09:00 AM", "Breakfast"],
+            ["11:30 AM", "Veg Juice"], ["01:30 PM", "Lunch"],
+            ["05:00 PM", "Tea (No Sugar)"], ["08:00 PM", "Light Dinner"]
+        ]
+
+    # --- B. BLOOD PRESSURE LOGIC ---
+    elif condition == "Blood Pressure":
+        # Diet (DASH)
+        diet_data = [
+            ["Banana Oats Smoothie", "High Potassium", "1 Glass"],
+            ["Grilled Fish / Tofu", "Omega-3 Rich", "150g"],
+            ["Spinach (Palak) Dal", "Magnesium Rich", "1 Bowl"],
+            ["Unsalted Nuts", "Healthy Fats", "Handful"],
+            ["Curd Rice", "Probiotic", "1 Bowl"],
+        ]
+        # Workout (Cardio Focus)
+        workout_data = [
+            ["Walking / Cycling", "30 Mins", "Lower BP"],
+            ["Swimming", "20 Mins", "Zero Joint Impact"],
+            ["Breathing Exercises", "10 Mins", "Calms Nervous System"],
+        ]
+        # Schedule
+        schedule_data = [
+            ["07:00 AM", "Lemon Water"], ["07:30 AM", "Morning Walk"],
+            ["09:00 AM", "Low Salt Breakfast"], ["01:00 PM", "Lunch"],
+            ["06:00 PM", "Yoga"], ["08:00 PM", "Soup Dinner"]
+        ]
+
+    # --- C. STANDARD BMI LOGIC ---
+    else:
+        if status == "Underweight":
+            diet_data = [
+                ["Banana Shake", "High Calorie", "1 Large Glass"],
+                ["Ghee Roti + Dal", "Calorie Dense", "3 Rotis"],
+                ["Eggs / Paneer", "High Protein", "3 Units"],
+                ["Dry Fruits", "Healthy Fats", "100g"],
+                ["Peanut Butter", "Energy Dense", "2 Spoons"],
+            ]
+            workout_data = [
+                ["Push Ups", "3 Sets x 12 Reps", "Upper Body"],
+                ["Squats", "3 Sets x 15 Reps", "Legs"],
+                ["Lunges", "3 Sets x 12 Reps", "Glutes"],
+            ]
+            schedule_data = [
+                ["07:00 AM", "Heavy Breakfast"], ["10:00 AM", "Snack"],
+                ["01:00 PM", "Heavy Lunch"], ["04:00 PM", "Shake"],
+                ["08:00 PM", "Dinner"], ["10:00 PM", "Milk"]
+            ]
+
+        elif status == "Normal":
+            diet_data = [
+                ["Oats / Dalia", "Fiber Rich", "1 Bowl"],
+                ["Grilled Chicken/Veg", "Balanced Protein", "150g"],
+                ["Seasonal Fruit", "Vitamins", "1 Bowl"],
+                ["Dal Rice", "Carbs + Protein", "1 Plate"],
+            ]
+            workout_data = [
+                ["Running", "20 Mins", "Cardio"],
+                ["Push Ups", "3 Sets x 15 Reps", "Strength"],
+                ["Plank", "3 Sets (1 Min)", "Core"],
+            ]
+            schedule_data = [
+                ["07:30 AM", "Breakfast"], ["12:30 PM", "Lunch"],
+                ["05:00 PM", "Snack"], ["06:30 PM", "Workout"],
+                ["08:30 PM", "Dinner"]
+            ]
+
+        elif status == "Overweight" or status == "Obese":
+            diet_data = [
+                ["Green Salad", "Fiber / Filling", "Large Bowl"],
+                ["Clear Soup", "Low Calorie", "1 Bowl"],
+                ["Grilled Protein", "High Satiety", "150g"],
+                ["Buttermilk", "Probiotic", "1 Glass"],
+                ["Papaya", "Digestion", "1 Bowl"],
+            ]
+            workout_data = [
+                ["HIIT / Fast Walk", "30 Mins", "Fat Burn"],
+                ["Burpees / Jacks", "3 Sets x 15", "Calorie Burn"],
+                ["Bodyweight Squats", "3 Sets x 20", "Legs"],
+            ]
+            schedule_data = [
+                ["07:00 AM", "Warm Water"], ["08:00 AM", "Light Breakfast"],
+                ["01:00 PM", "Salad Lunch"], ["05:00 PM", "Green Tea"],
+                ["07:30 PM", "Soup Dinner"]
+            ]
+
+    # --- 5. SPECIALIST FETCH ---
+    if specialist_query == "Normal": specialist_query = "General"
+    
+    specialist = Specialist.objects.filter(
+        location=city, 
+        specialist_type__icontains=specialist_query
+    ).first()
+
+    # ==========================================
+    # 6. BUILD PDF LAYOUT
+    # ==========================================
+
+    # Header
+    elements.append(Paragraph("BMI & HEALTH INSTRUCTOR REPORT", style_header))
+    
+    # --- SECTION A: USER PROFILE ---
+    elements.append(Paragraph(f"User Profile: {user.name}", style_sub))
+    prof_data = [
+        ["Age / Gender:", f"{user.age} / {user.gender}", "Condition:", condition],
+        ["Current BMI:", f"{last_record.bmi}", "Status:", status],
+        ["City:", city, "Date:", last_record.created_at.strftime('%Y-%m-%d')]
+    ]
+    t_prof = Table(prof_data, colWidths=[80, 120, 80, 120])
+    t_prof.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,-1), colors.aliceblue),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.grey),
+        ('FONTNAME', (0,0), (-1,-1), 'Helvetica'),
+        ('FONTSIZE', (0,0), (-1,-1), 9),
+    ]))
+    elements.append(t_prof)
+    elements.append(Spacer(1, 10))
+
+    # --- SECTION B: DIET & SCHEDULE (Side by Side if possible, but stacked for safety) ---
+    
+    # 1. DIET TABLE
+    elements.append(Paragraph("1. Recommended Diet Plan", style_sub))
+    d_table = [['Food Item', 'Nutrition', 'Qty']] # Header
+    for d in diet_data: d_table.append(d) # Rows
+
+    t_diet = Table(d_table, colWidths=[150, 150, 100])
+    t_diet.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,0), colors.darkorange),
+        ('TEXTCOLOR', (0,0), (-1,0), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.grey),
+        ('FONTSIZE', (0,0), (-1,-1), 9),
+    ]))
+    elements.append(t_diet)
+    elements.append(Spacer(1, 10))
+
+    # 2. WORKOUT TABLE
+    elements.append(Paragraph("2. Workout Routine", style_sub))
+    w_table = [['Exercise', 'Duration / Sets', 'Benefit']] # Header
+    for w in workout_data: w_table.append(w)
+
+    t_work = Table(w_table, colWidths=[150, 120, 130])
+    t_work.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,0), colors.teal),
+        ('TEXTCOLOR', (0,0), (-1,0), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.grey),
+        ('FONTSIZE', (0,0), (-1,-1), 9),
+    ]))
+    elements.append(t_work)
+    elements.append(Spacer(1, 10))
+
+    # 3. SCHEDULE TABLE
+    elements.append(Paragraph("3. Daily Schedule", style_sub))
+    s_table = [['Time', 'Activity']]
+    for s in schedule_data: s_table.append(s)
+    
+    t_sched = Table(s_table, colWidths=[100, 300])
+    t_sched.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,0), colors.navy),
+        ('TEXTCOLOR', (0,0), (-1,0), colors.white),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.grey),
+        ('ALIGN', (0,0), (0,-1), 'CENTER'),
+        ('FONTSIZE', (0,0), (-1,-1), 9),
+    ]))
+    elements.append(t_sched)
+    elements.append(Spacer(1, 10))
+
+    # 4. SPECIALIST INFO
+    elements.append(Paragraph("4. Recommended Specialist", style_sub))
+    if specialist:
+        spec_data = [
+            ["Doctor:", specialist.name],
+            ["Specialty:", f"{specialist.specialty} ({specialist.specialist_type})"],
+            ["Location:", specialist.location],
+            ["Timing:", specialist.availability]
+        ]
+        t_spec = Table(spec_data, colWidths=[100, 300])
+        t_spec.setStyle(TableStyle([
+            ('BACKGROUND', (0,0), (0,-1), colors.lightgrey),
+            ('GRID', (0,0), (-1,-1), 0.5, colors.grey),
+            ('FONTNAME', (0,0), (0,-1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0,0), (-1,-1), 9),
+        ]))
+        elements.append(t_spec)
+    else:
+        elements.append(Paragraph(f"No specific specialist found in {city}.", styles['BodyText']))
+
+    # Build
+    doc.build(elements)
+    buffer.seek(0)
+    return FileResponse(buffer, as_attachment=True, filename=f'Full_Health_Report_{user.name}.pdf')
+
+
+def privacy_policy(request):
+    """Renders the Privacy Policy page."""
+    return render(request, 'privacy.html')
+
+def terms_of_service(request):
+    """Renders the Terms & Disclaimer page."""
+    return render(request, 'terms.html')
